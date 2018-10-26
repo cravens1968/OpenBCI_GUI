@@ -1,4 +1,4 @@
- //<>//
+
 ////////////////////////////////////////////////////////////
 // Class: OutputFile_rawtxt
 // Purpose: handle file creation and writing for the text log file
@@ -25,16 +25,16 @@ DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss.SSS");
 void openNewLogFile(String _fileName) {
   //close the file if it's open
   switch (outputDataSource) {
-  case OUTPUT_SOURCE_ODF:
-    openNewLogFileODF(_fileName);
-    break;
-  case OUTPUT_SOURCE_BDF:
-    openNewLogFileBDF(_fileName);
-    break;
-  case OUTPUT_SOURCE_NONE:
-  default:
-    // Do nothing...
-    break;
+    case OUTPUT_SOURCE_ODF:
+      openNewLogFileODF(_fileName);
+      break;
+    case OUTPUT_SOURCE_BDF:
+      openNewLogFileBDF(_fileName);
+      break;
+    case OUTPUT_SOURCE_NONE:
+    default:
+      // Do nothing...
+      break;
   }
 }
 
@@ -66,20 +66,11 @@ void openNewLogFileODF(String _fileName) {
     println("OpenBCI_GUI: closing log file");
     closeLogFile();
   }
-  if (userInputFile != null) {
-    println("OpenBCI_GUI: closing user input log file");
-    closeUserInputFile();
-  }
-
   //open the new file
   fileoutput_odf = new OutputFile_rawtxt(getSampleRateSafe(), _fileName);
- 
 
   output_fname = fileoutput_odf.fname;
-  
-  userInputFile = new UserInputFile(getSampleRateSafe(), _fileName);  // user input log will have same name as data log + "_user"
   println("cyton: openNewLogFile: opened ODF output file: " + output_fname); //Print filename of new ODF file to console
-    println("cyton: openNewUserLogFile: opened user log file: " + userInputFile.fname); //Print filename of new ODF file to console
   //output("cyton: openNewLogFile: opened ODF output file: " + output_fname);
 }
 
@@ -100,16 +91,16 @@ void playbackSelected(File selection) {
 
 void closeLogFile() {
   switch (outputDataSource) {
-  case OUTPUT_SOURCE_ODF:
-    closeLogFileODF();
-    break;
-  case OUTPUT_SOURCE_BDF:
-    closeLogFileBDF();
-    break;
-  case OUTPUT_SOURCE_NONE:
-  default:
-    // Do nothing...
-    break;
+    case OUTPUT_SOURCE_ODF:
+      closeLogFileODF();
+      break;
+    case OUTPUT_SOURCE_BDF:
+      closeLogFileBDF();
+      break;
+    case OUTPUT_SOURCE_NONE:
+    default:
+      // Do nothing...
+      break;
   }
 }
 
@@ -132,19 +123,13 @@ void closeLogFileODF() {
     fileoutput_odf.closeFile();
   }
 }
-void closeUserInputFile() {
-  if (userInputFile != null) {
-    userInputFile.closeFile();
-  }
-}
-
 
 void fileSelected(File selection) {  //called by the Open File dialog box after a file has been selected
   if (selection == null) {
     println("fileSelected: no selection so far...");
   } else {
     //inputFile = selection;
-    playbackData_fname = selection.getAbsolutePath(); //<>//
+    playbackData_fname = selection.getAbsolutePath(); //<>// //<>//
   }
 }
 
@@ -175,6 +160,7 @@ void createPlaybackFileFromSD() {
   dataWriter.println("%First Column = SampleIndex");
   dataWriter.println("%Last Column = Timestamp");
   dataWriter.println("%Other Columns = EEG data in microvolts followed by Accel Data (in G) interleaved with Aux Data");
+
 }
 
 void sdFileSelected(File selection) {
@@ -259,7 +245,7 @@ public class OutputFile_rawtxt {
 
     if (output != null) {
       output.print(Integer.toString(data.sampleIndex));
-      writeValues(data.values, scale_to_uV);
+      writeValues(data.values,scale_to_uV);
       if (eegDataSource == DATASOURCE_GANGLION) {
         writeAccValues(data.auxValues, scale_for_aux);
       } else {
@@ -270,8 +256,7 @@ public class OutputFile_rawtxt {
         }
       }
       output.print( ", " + dateFormat.format(date));
-      output.println(); 
-      rowsWritten++;
+      output.println(); rowsWritten++;
       //output.flush();
     }
   }
@@ -321,6 +306,7 @@ public class OutputFile_rawtxt {
         if ( data.auxValues[0] > 0) {
           hub.validLastMarker = data.auxValues[0];
         }
+
       } else {
         for (int Ival = 0; Ival < 3; Ival++) {
           output.print(", " + data.auxValues[Ival]);
@@ -332,6 +318,8 @@ public class OutputFile_rawtxt {
         output.print(", " + ((data.auxValues[i] & 0xFF00) >> 8));
       }
     }
+
+
   }
 
   public void closeFile() {
@@ -422,7 +410,7 @@ public class OutputFile_BDF {
 
   private final float ADS1299_Vref = 4.5f;  //reference voltage for ADC in ADS1299.  set by its hardware
   private float ADS1299_gain = 24.0;  //assumed gain setting for ADS1299.  set by its Arduino code
-  private float scale_fac_uVolts_per_count = ADS1299_Vref / ((float)(pow(2, 23)-1)) / ADS1299_gain  * 1000000.f; //ADS1299 datasheet Table 7, confirmed through experiment
+  private float scale_fac_uVolts_per_count = ADS1299_Vref / ((float)(pow(2,23)-1)) / ADS1299_gain  * 1000000.f; //ADS1299 datasheet Table 7, confirmed through experiment
 
   private int bdf_number_of_data_records = -1;
 
@@ -578,9 +566,9 @@ public class OutputFile_BDF {
     samplesInDataRecord++;
     // writeValues(data.auxValues,scale_for_aux);
     if (samplesInDataRecord >= fs_Hz) {
-      arrayCopy(chanValBuf, chanValBuf_buffer);
+      arrayCopy(chanValBuf,chanValBuf_buffer);
       if (eegDataSource == DATASOURCE_CYTON) {
-        arrayCopy(auxValBuf, auxValBuf_buffer);
+        arrayCopy(auxValBuf,auxValBuf_buffer);
       }
 
       samplesInDataRecord = 0;
@@ -622,8 +610,8 @@ public class OutputFile_BDF {
         dstream.write(0);
       }
       dataRecordsWritten++;
-    } 
-    catch (Exception e) {
+
+    } catch (Exception e) {
       println("writeRawData_dataPacket: Exception ");
       e.printStackTrace();
     }
@@ -634,8 +622,7 @@ public class OutputFile_BDF {
     output("Closed the temp data file. Now opening a new file");
     try {
       dstream.close();
-    } 
-    catch (Exception e) {
+    } catch (Exception e) {
       println("closeFile: dstream close exception ");
       e.printStackTrace();
     }
@@ -694,6 +681,7 @@ public class OutputFile_BDF {
     //   println("closeFile: IOException");
     //   e.printStackTrace();
     // }
+
   }
 
   public int getRecordsWritten() {
@@ -1019,6 +1007,7 @@ public class OutputFile_BDF {
     } else {
       return nbChan + nbAnnotations;
     }
+
   }
 
   /**
@@ -1276,18 +1265,18 @@ public class OutputFile_BDF {
       // println("writeHeader: starting...");
 
       o.write(0xFF);
-      writeString(padStringRight(new String(bdf_version), BDF_HEADER_SIZE_VERSION - 1), o); // Do one less then supposed to because of the first byte already written.
-      String[] temp1  = {bdf_patient_id_subfield_hospoital_code, bdf_patient_id_subfield_sex, bdf_patient_id_subfield_birthdate, bdf_patient_id_subfield_name};
+      writeString(padStringRight(new String(bdf_version),BDF_HEADER_SIZE_VERSION - 1), o); // Do one less then supposed to because of the first byte already written.
+      String[] temp1  = {bdf_patient_id_subfield_hospoital_code,bdf_patient_id_subfield_sex,bdf_patient_id_subfield_birthdate,bdf_patient_id_subfield_name};
       writeString(padStringRight(joinStringArray(temp1, " "), BDF_HEADER_SIZE_PATIENT_ID), o);
-      String[] temp2 = {bdf_recording_id_subfield_prefix, bdf_recording_id_subfield_startdate, bdf_recording_id_subfield_admin_code, bdf_recording_id_subfield_investigator, bdf_recording_id_subfield_equipment};
+      String[] temp2 = {bdf_recording_id_subfield_prefix,bdf_recording_id_subfield_startdate,bdf_recording_id_subfield_admin_code,bdf_recording_id_subfield_investigator,bdf_recording_id_subfield_equipment};
       writeString(padStringRight(joinStringArray(temp2, " "), BDF_HEADER_SIZE_RECORDING_ID), o);
       writeString(getDateString(startTime, startDateFormat), o);
       writeString(getDateString(startTime, startTimeFormat), o);
-      writeString(padStringRight(str(getBytesInHeader()), BDF_HEADER_SIZE_BYTES_IN_HEADER), o);
-      writeString(padStringRight("24BIT", BDF_HEADER_SIZE_RESERVED), o);//getContinuity(),BDF_HEADER_SIZE_RESERVED), o);
-      writeString(padStringRight(str(dataRecordsWritten), BDF_HEADER_SIZE_NUMBER_DATA_RECORDS), o);
-      writeString(padStringRight("1", BDF_HEADER_SIZE_DURATION_OF_DATA_RECORD), o);
-      writeString(padStringRight(str(getNbSignals()), BDF_HEADER_SIZE_NUMBER_SIGNALS), o);
+      writeString(padStringRight(str(getBytesInHeader()),BDF_HEADER_SIZE_BYTES_IN_HEADER), o);
+      writeString(padStringRight("24BIT",BDF_HEADER_SIZE_RESERVED), o);//getContinuity(),BDF_HEADER_SIZE_RESERVED), o);
+      writeString(padStringRight(str(dataRecordsWritten),BDF_HEADER_SIZE_NUMBER_DATA_RECORDS), o);
+      writeString(padStringRight("1",BDF_HEADER_SIZE_DURATION_OF_DATA_RECORD), o);
+      writeString(padStringRight(str(getNbSignals()),BDF_HEADER_SIZE_NUMBER_SIGNALS), o);
 
       writeStringArrayWithPaddingTimes(labelsEEG, BDF_HEADER_NS_SIZE_LABEL, o);
       if (eegDataSource == DATASOURCE_CYTON) writeStringArrayWithPaddingTimes(labelsAux, BDF_HEADER_NS_SIZE_LABEL, o);
@@ -1330,8 +1319,8 @@ public class OutputFile_BDF {
       writeStringArrayWithPaddingTimes(reservedAnnotations, BDF_HEADER_NS_SIZE_RESERVED, o);
 
       // println("writeHeader: done...");
-    } 
-    catch(Exception e) {
+
+    } catch(Exception e) {
       println("writeHeader: Exception " + e);
     }
   }
@@ -1361,11 +1350,11 @@ public class OutputFile_BDF {
       for (int i = 0; i < len; i++) {
         o.write((int)s.charAt(i));
       }
-    } 
-    catch (Exception e) {
+    } catch (Exception e) {
       println("writeString: exception: " + e);
     }
   }
+
 };
 
 ///////////////////////////////////////////////////////////////
@@ -1384,9 +1373,7 @@ public class OutputFile_BDF {
 
 class Table_CSV extends Table {
   private int sampleRate;
-  public int getSampleRate() { 
-    return sampleRate;
-  }
+  public int getSampleRate() { return sampleRate; }
   Table_CSV(String fname) throws IOException {
     init();
     readCSV(PApplet.createReader(createInput(fname)));
@@ -1417,7 +1404,7 @@ class Table_CSV extends Table {
               println("Sample rate set to " + sampleRate);
               // String[] m = match(line, "\\d+");
               // if (m != null) {
-              // println("Found '" + m[1] + "' inside the line");
+                // println("Found '" + m[1] + "' inside the line");
               // }
             }
           }
@@ -1432,10 +1419,11 @@ class Table_CSV extends Table {
           setRowCount(row << 1);
         }
         if (row == 0 && header) {
-          setColumnTitles(tsv ? PApplet.split(line, '\t') : split(line, ','));
+          setColumnTitles(tsv ? PApplet.split(line, '\t') : split(line,','));
           header = false;
-        } else {
-          setRow(row, tsv ? PApplet.split(line, '\t') : split(line, ','));
+        }
+        else {
+          setRow(row, tsv ? PApplet.split(line, '\t') : split(line,','));
           row++;
         }
 
@@ -1513,7 +1501,8 @@ public void convertSDFile() {
     outputSuccess("SD file converted to " + logFileName);
     dataWriter.flush();
     dataWriter.close();
-  } else
+  }
+    else
   {
     hexNums = splitTokens(dataLine, ",");
 
@@ -1523,12 +1512,12 @@ public void convertSDFile() {
       println(dataLine);
       printNextLine = true;
     } else {
-      if (hexNums.length < 13) {
+      if (hexNums.length < 13){
         convert8channelLine();
       } else {
         convert16channelLine();
       }
-      if (printNextLine) {
+      if(printNextLine){
         printNextLine = false;
       }
     }
@@ -1536,8 +1525,8 @@ public void convertSDFile() {
 }
 
 void convert16channelLine() {
-  if (printNextLine) {
-    for (int i=0; i<hexNums.length; i++) {
+  if(printNextLine){
+    for(int i=0; i<hexNums.length; i++){
       h = hexNums[i];
       if (h.length()%2 == 0 && h.length() <= 10) {  // make sure this is a real number
         intData[i] = unhex(h);
@@ -1546,7 +1535,7 @@ void convert16channelLine() {
       }
       dataWriter.print(intData[i]);
       print(intData[i]);
-      if (hexNums.length > 1) {
+      if(hexNums.length > 1){
         dataWriter.print(", ");
         print(", ");
       }
@@ -1580,13 +1569,13 @@ void convert16channelLine() {
 
     if (i>=1 && i<=16) {
       floatData[i] *= cyton.get_scale_fac_uVolts_per_count();
-    } else if (i != 0) {
+    }else if(i != 0){
       floatData[i] *= cyton.get_scale_fac_accel_G_per_count();
     }
 
-    if (i == 0) {
+    if(i == 0){
       dataWriter.print(int(floatData[i]));  // print the sample counter
-    } else {
+    }else{
       dataWriter.print(floatData[i]);  // print the current channel value
     }
     if (i < hexNums.length-1) {  // print the current channel value
@@ -1597,8 +1586,8 @@ void convert16channelLine() {
 }
 
 void convert8channelLine() {
-  if (printNextLine) {
-    for (int i=0; i<hexNums.length; i++) {
+  if(printNextLine){
+    for(int i=0; i<hexNums.length; i++){
       h = hexNums[i];
       if (h.length()%2 == 0) {  // make sure this is a real number
         intData[i] = unhex(h);
@@ -1607,7 +1596,7 @@ void convert8channelLine() {
       }
       print(intData[i]);
       dataWriter.print(intData[i]);
-      if (hexNums.length > 1) {
+      if(hexNums.length > 1){
         dataWriter.print(", ");
         print(", ");
       }
@@ -1644,13 +1633,13 @@ void convert8channelLine() {
 
     if (i>=1 && i<=8) {
       floatData[i] *= cyton.get_scale_fac_uVolts_per_count();
-    } else if (i != 0) {
+    }else if(i != 0){
       floatData[i] *= cyton.get_scale_fac_accel_G_per_count();
     }
 
-    if (i == 0) {
+    if(i == 0){
       dataWriter.print(int(floatData[i]));  // print the sample counter
-    } else {
+    }else{
       dataWriter.print(floatData[i]);  // print the current channel value
     }
     if (i < hexNums.length-1) {

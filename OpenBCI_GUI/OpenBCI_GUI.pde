@@ -169,7 +169,6 @@ float dataBuff_len_sec = displayTime_sec + 3f; //needs to be wider than actual d
 
 //variables for writing EEG data out to a file
 OutputFile_rawtxt fileoutput_odf;
-UserInputFile userInputFile;
 OutputFile_BDF fileoutput_bdf;
 String output_fname;
 String fileName = "N/A";
