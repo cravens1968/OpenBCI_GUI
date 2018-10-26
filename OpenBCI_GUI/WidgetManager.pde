@@ -27,6 +27,7 @@ W_PulseSensor w_pulsesensor;
 W_AnalogRead w_analogRead;
 W_DigitalRead w_digitalRead;
 W_MarkerMode w_markermode;
+W_UserInputLogger w_userInputLogger;
 
 
 //ADD YOUR WIDGET TO WIDGETS OF WIDGETMANAGER
@@ -86,6 +87,12 @@ void setupWidgets(PApplet _this, ArrayList<Widget> w){
   w_focus.setTitle("Focus Widget");
   addWidget(w_focus, w);
   // println("  setupWidgets focus widget -- " + millis());
+
+  w_userInputLogger = new W_UserInputLogger(_this);
+  w_userInputLogger.setTitle("User Input Logger");
+  addWidget(w_userInputLogger, w);
+  // println("  setupWidgets focus widget -- " + millis());
+
 
   //only instantiate these widgets if you are using a Cyton board for live streaming
   if(eegDataSource != DATASOURCE_GANGLION){
