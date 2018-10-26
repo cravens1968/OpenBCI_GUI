@@ -363,7 +363,7 @@ void setup() {
   println("Last update: 9/5/2016"); //Welcome line.
   println("For more information about how to work with this code base, please visit: http://docs.openbci.com/OpenBCI%20Software/");
   //open window
-  size(1024, 768, P2D);
+  size(2048, 1536, P2D);
   ourApplet = this;
 
   if(frameRateCounter==0){
