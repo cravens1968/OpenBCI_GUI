@@ -283,6 +283,7 @@ class ControlPanel {
 
   public int x, y, w, h;
   public boolean isOpen;
+  public boolean isShortcutEnabled;
 
   boolean showSourceBox, showSerialBox, showFileBox, showChannelBox, showInitBox;
   PlotFontInfo fontInfo;
@@ -324,7 +325,7 @@ class ControlPanel {
   boolean convertingSD = false;
 
   ControlPanel(OpenBCI_GUI mainClass) {
-
+    isShortcutEnabled = true;
     x = 3;
     y = 3 + topNav.controlPanelCollapser.but_dy;
     w = topNav.controlPanelCollapser.but_dx;

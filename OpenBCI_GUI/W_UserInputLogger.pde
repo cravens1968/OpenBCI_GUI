@@ -1,4 +1,4 @@
-//<>// //<>//
+//<>// //<>// //<>//
 ////////////////////////////////////////////////////
 //
 //    W_UserInputLogger.pde 
@@ -28,21 +28,22 @@ class W_UserInputLogger extends Widget {
 
     cp5_widget.addTextfield("Session Description")
       .setFont(font)
-      .setFocus(true)
+      .setFocus(false)
       .setColor(color(255, 0, 0))
       ;
 
     cp5_widget.addTextfield("Subject Name")
       .setFont(font)
-      .setFocus(true)
+      .setFocus(false)
       .setColor(color(255, 0, 0))
       ;
 
     cp5_widget.addTextfield("Session Objective")
       .setFont(font)
-      .setFocus(true)
+      .setFocus(false)
       .setColor(color(255, 0, 0))
       ;
+
     submitButton = new Button((int)(x + 3), (int)(y + 3 - navHeight), 120, navHeight - 6, "submit", 12);
     submitButton.setCornerRoundess((int)(navHeight-6));
     submitButton.setFont(p6, 10);
@@ -90,9 +91,17 @@ class W_UserInputLogger extends Widget {
   void mousePressed() {
     super.mousePressed(); //calls the parent mousePressed() method of Widget (DON'T REMOVE)
 
-   if (submitButton.isMouseHere()) {
-          submitButton.setIsActive(true);
-        }
+    Textfield tfDesc = (Textfield) cp5_widget.getController("Session Description");
+    Textfield tfObj = (Textfield) cp5_widget.getController("Session Objective");
+    Textfield tfSubjN = (Textfield) cp5_widget.getController("Subject Name");
+
+    if (submitButton.isMouseHere()) {
+      submitButton.setIsActive(true);
+    }
+    if (tfDesc.isFocus() || tfObj.isFocus() || tfSubjN.isFocus()) {
+      println("Disable Keyboard Shortcuts");
+      controlPanel.isShortcutEnabled = false;
+    }
   }
 
   void mouseReleased() {
@@ -101,15 +110,18 @@ class W_UserInputLogger extends Widget {
     Textfield tfDesc = (Textfield) cp5_widget.getController("Session Description");
     Textfield tfObj = (Textfield) cp5_widget.getController("Session Objective");
     Textfield tfSubjN = (Textfield) cp5_widget.getController("Subject Name");
-    
-    
-    if (submitButton.isActive &&submitButton.isMouseHere()) {
+
+
+    if (submitButton.isActive && submitButton.isMouseHere()) {
       userInputFile.writeHeader("%"+"Session Description = " + tfDesc.getText());
       userInputFile.writeHeader("%"+"Session Objective = " + tfObj.getText());
       userInputFile.writeHeader("%"+"Subject Name = " + tfSubjN.getText());
+      controlPanel.isShortcutEnabled = true;
+      println("Enable Keyboard Shortcuts");
     }
     submitButton.setIsActive(false);
   }
+
 
   //add custom functions here
   void customFunction() {

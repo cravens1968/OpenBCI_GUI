@@ -568,8 +568,8 @@ class Hub {
       // println(msg);
       String[] list = split(msg, ',');
       int code = Integer.parseInt(list[1]);
-      int stopByte = 0xC0; //<>//
-      if ((eegDataSource == DATASOURCE_GANGLION || eegDataSource == DATASOURCE_CYTON) && systemMode == 10 && isRunning) { //<>//
+      int stopByte = 0xC0;
+      if ((eegDataSource == DATASOURCE_GANGLION || eegDataSource == DATASOURCE_CYTON) && systemMode == 10 && isRunning) {
         if (Integer.parseInt(list[1]) == RESP_SUCCESS_DATA_SAMPLE) {
           // Sample number stuff
           dataPacket.sampleIndex = int(Integer.parseInt(list[2]));
