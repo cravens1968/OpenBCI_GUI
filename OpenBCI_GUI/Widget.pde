@@ -85,6 +85,7 @@ class Widget{
     dropdowns.add(dropdownToAdd);
   }
 
+
   void setupWidgetSelectorDropdown(ArrayList<String> _widgetOptions){
     cp5_widget.setAutoDraw(false); //this prevents the cp5 object from drawing automatically (if it is set to true it will be drawn last, on top of all other GUI stuff... not good)
     // cp5_widget.setFont(h2, 16);

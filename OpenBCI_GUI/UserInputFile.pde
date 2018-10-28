@@ -9,7 +9,7 @@ public class UserInputFile extends OutputFile_rawtxt {
   //}
 
   UserInputFile(float _fs_Hz, String _fileName) {
-    super(_fs_Hz, _fileName + "_userdata"); //<>//
+    super(_fs_Hz, _fileName + "_userdata");
     writeHeader(_fs_Hz);
   }
 
