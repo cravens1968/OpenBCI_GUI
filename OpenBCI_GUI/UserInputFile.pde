@@ -10,12 +10,13 @@ public class UserInputFile extends OutputFile_rawtxt {
 
   UserInputFile(float _fs_Hz, String _fileName) {
     super(_fs_Hz, _fileName + "_userdata");
-    writeHeader(_fs_Hz);
+ 
   }
 
-  public void writeHeader(float fs_Hz) {
+  public void writeHeader(String s) {
     output.println("%OpenBCI User Input Logger!!!");
     output.println("%");
+    output.println(s);
     output.flush();
   }
   public void writeData(int sampleIndex, String s) {

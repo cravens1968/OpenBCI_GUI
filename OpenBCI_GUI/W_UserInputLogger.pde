@@ -1,30 +1,23 @@
- //<>// //<>//
+//<>// //<>//
 ////////////////////////////////////////////////////
 //
-//    W_UserInputLogger.pde (ie "Widget Template")
+//    W_UserInputLogger.pde 
 //
-//    This is a Template Widget, intended to be used as a starting point for OpenBCI Community members that want to develop their own custom widgets!
-//    Good luck! If you embark on this journey, please let us know. Your contributions are valuable to everyone!
+//    
 //
-//    Created by: Conor Russomanno, November 2016
+//    Created by: Daniel Cravens, October  2018
 //
 ///////////////////////////////////////////////////,
 
 class W_UserInputLogger extends Widget {
-
-  //to see all core variables/methods of the Widget class, refer to Widget.pde
-  //put your custom variables here...
-  //Button widgetTemplateButton;
-
+  Button submitButton;
 
   W_UserInputLogger(PApplet _parent) {
     super(_parent); //calls the parent CONSTRUCTOR method of Widget (DON'T REMOVE)
     super.dropdownWidth = 128;
     PFont font = createFont("arial", 20);
 
-    //This is the protocol for setting up dropdowns.
-    //Note that these 3 dropdowns correspond to the 3 global functions below
-    //You just need to make sure the "id" (the 1st String) has the same name as the corresponding function
+
     addDropdown("uilDropdown1", "On Mouse Click", Arrays.asList("Meditate|Focus", "Open|Closed", "0|1"), 2);
 
     //addDropdown("uilDropdown2", "Drop 2", Arrays.asList("C", "D", "E"), 1);
@@ -50,6 +43,13 @@ class W_UserInputLogger extends Widget {
       .setFocus(true)
       .setColor(color(255, 0, 0))
       ;
+    submitButton = new Button((int)(x + 3), (int)(y + 3 - navHeight), 120, navHeight - 6, "submit", 12);
+    submitButton.setCornerRoundess((int)(navHeight-6));
+    submitButton.setFont(p6, 10);
+    submitButton.setColorNotPressed(color(57, 128, 204));
+    submitButton.textColorNotActive = color(255);
+    submitButton.hasStroke(false);
+    submitButton.setHelpText("Click this button to submit data to header");
   }
 
   void update() {
@@ -72,7 +72,12 @@ class W_UserInputLogger extends Widget {
     cp5_widget.getController("Subject Name").setPosition(x+10, y+210);
     cp5_widget.getController("Subject Name").setSize(w-25, 40);
 
-      popStyle();
+    submitButton.setPos((int)(x + 3), (int)(y + 3 - navHeight));
+
+
+    submitButton.draw();
+
+    popStyle();
   }
 
   void screenResized() {
@@ -85,20 +90,25 @@ class W_UserInputLogger extends Widget {
   void mousePressed() {
     super.mousePressed(); //calls the parent mousePressed() method of Widget (DON'T REMOVE)
 
-    //put your code here...
-    //if (widgetTemplateButton.isMouseHere()) {
-    //  widgetTemplateButton.setIsActive(true);
-    //}
+   if (submitButton.isMouseHere()) {
+          submitButton.setIsActive(true);
+        }
   }
 
   void mouseReleased() {
     super.mouseReleased(); //calls the parent mouseReleased() method of Widget (DON'T REMOVE)
 
-    //put your code here...
-    //if (widgetTemplateButton.isActive && widgetTemplateButton.isMouseHere()) {
-    //  widgetTemplateButton.goToURL();
-    //}
-    //widgetTemplateButton.setIsActive(false);
+    Textfield tfDesc = (Textfield) cp5_widget.getController("Session Description");
+    Textfield tfObj = (Textfield) cp5_widget.getController("Session Objective");
+    Textfield tfSubjN = (Textfield) cp5_widget.getController("Subject Name");
+    
+    
+    if (submitButton.isActive &&submitButton.isMouseHere()) {
+      userInputFile.writeHeader("%"+"Session Description = " + tfDesc.getText());
+      userInputFile.writeHeader("%"+"Session Objective = " + tfObj.getText());
+      userInputFile.writeHeader("%"+"Subject Name = " + tfSubjN.getText());
+    }
+    submitButton.setIsActive(false);
   }
 
   //add custom functions here

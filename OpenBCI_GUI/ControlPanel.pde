@@ -27,16 +27,14 @@ ControlP5 cp5Popup;
 CallbackListener cb = new CallbackListener() { //used by ControlP5 to clear text field on double-click
   public void controlEvent(CallbackEvent theEvent) {
 
-    if (cp5.isMouseOver(cp5.get(Textfield.class, "fileName"))){
+    if (cp5.isMouseOver(cp5.get(Textfield.class, "fileName"))) {
       println("CallbackListener: controlEvent: clearing cyton");
       cp5.get(Textfield.class, "fileName").clear();
       // cp5.get(Textfield.class, "fileNameGanglion").clear();
-
-    } else if (cp5.isMouseOver(cp5.get(Textfield.class, "fileNameGanglion"))){
+    } else if (cp5.isMouseOver(cp5.get(Textfield.class, "fileNameGanglion"))) {
       println("CallbackListener: controlEvent: clearing ganglion");
       cp5.get(Textfield.class, "fileNameGanglion").clear();
-
-    } else if (cp5.isMouseOver(cp5.get(Textfield.class, "staticIPAddress"))){
+    } else if (cp5.isMouseOver(cp5.get(Textfield.class, "staticIPAddress"))) {
       println("CallbackListener: controlEvent: clearing static IP Address");
       cp5.get(Textfield.class, "staticIPAddress").clear();
     }
@@ -184,7 +182,7 @@ public void controlEvent(ControlEvent theEvent) {
     ganglion.setInterface(INTERFACE_NONE);
     cyton.setInterface(INTERFACE_NONE);
 
-    if(newDataSource == DATASOURCE_CYTON){
+    if (newDataSource == DATASOURCE_CYTON) {
       updateToNChan(8);
       chanButton8.color_notPressed = isSelected_color;
       chanButton16.color_notPressed = autoFileName.color_notPressed; //default color of button
@@ -199,7 +197,7 @@ public void controlEvent(ControlEvent theEvent) {
       hub.setWiFiStyle(WIFI_DYNAMIC);
       wifiIPAddressDyanmic.color_notPressed = isSelected_color;
       wifiIPAddressStatic.color_notPressed = autoFileName.color_notPressed;
-    } else if(newDataSource == DATASOURCE_GANGLION){
+    } else if (newDataSource == DATASOURCE_GANGLION) {
       updateToNChan(4);
       if (isWindows() && isHubInitialized == false) {
         hubInit();
@@ -216,12 +214,12 @@ public void controlEvent(ControlEvent theEvent) {
       hub.setWiFiStyle(WIFI_DYNAMIC);
       wifiIPAddressDyanmic.color_notPressed = isSelected_color;
       wifiIPAddressStatic.color_notPressed = autoFileName.color_notPressed;
-    } else if(newDataSource == DATASOURCE_PLAYBACKFILE){
+    } else if (newDataSource == DATASOURCE_PLAYBACKFILE) {
       updateToNChan(8);
       playbackChanButton4.color_notPressed = autoFileName.color_notPressed;
       playbackChanButton8.color_notPressed = isSelected_color;
       playbackChanButton16.color_notPressed = autoFileName.color_notPressed;
-    } else if(newDataSource == DATASOURCE_SYNTHETIC){
+    } else if (newDataSource == DATASOURCE_SYNTHETIC) {
       updateToNChan(8);
       synthChanButton4.color_notPressed = autoFileName.color_notPressed;
       synthChanButton8.color_notPressed = isSelected_color;
@@ -261,17 +259,16 @@ public void controlEvent(ControlEvent theEvent) {
     verbosePrint("SD setting = " + sdSetting);
   }
 
-  if (theEvent.isFrom("channelList")){
+  if (theEvent.isFrom("channelList")) {
     int setChannelInt = int(theEvent.getValue()) + 1;
     //Map bob = ((MenuList)theEvent.getController()).getItem(int(theEvent.getValue()));
     cp5Popup.get(MenuList.class, "channelList").setVisible(false);
     channelPopup.setClicked(false);
-    if(setChannel.wasPressed){
-      set_channel(rcBox,setChannelInt);
+    if (setChannel.wasPressed) {
+      set_channel(rcBox, setChannelInt);
       setChannel.wasPressed = false;
-    }
-    else if(ovrChannel.wasPressed){
-      set_channel_over(rcBox,setChannelInt);
+    } else if (ovrChannel.wasPressed) {
+      set_channel_over(rcBox, setChannelInt);
       ovrChannel.wasPressed = false;
     }
     println("still goin off");
@@ -333,7 +330,7 @@ class ControlPanel {
     w = topNav.controlPanelCollapser.but_dx;
     h = height - int(helpWidget.h);
 
-    if(hasIntroAnimation){
+    if (hasIntroAnimation) {
       isOpen = false;
     } else {
       isOpen = true;
@@ -377,7 +374,7 @@ class ControlPanel {
 
     rcBox = new RadioConfigBox(x+w, y, w, h, globalPadding);
     channelPopup = new ChannelPopup(x+w, y, w, h, globalPadding);
-    pollPopup = new PollPopup(x+w,y,w,h,globalPadding);
+    pollPopup = new PollPopup(x+w, y, w, h, globalPadding);
 
     wcBox = new WifiConfigBox(x+w, y, w, h, globalPadding);
 
@@ -392,18 +389,18 @@ class ControlPanel {
     // bleHardwareBox = new BLEHardwareBox(x + w, (dataLogBoxGanglion.y + dataLogBoxGanglion.h), w, h, globalPadding);
   }
 
-  public void resetListItems(){
+  public void resetListItems() {
     serialList.activeItem = -1;
     bleList.activeItem = -1;
     wifiList.activeItem = -1;
   }
 
-  public void open(){
+  public void open() {
     isOpen = true;
     topNav.controlPanelCollapser.setIsActive(true);
   }
 
-  public void close(){
+  public void close() {
     isOpen = false;
     topNav.controlPanelCollapser.setIsActive(false);
   }
@@ -423,7 +420,7 @@ class ControlPanel {
     }
 
     //auto-update serial list
-    if(Serial.list().length != serialPorts.length && systemMode != SYSTEMMODE_POSTINIT){
+    if (Serial.list().length != serialPorts.length && systemMode != SYSTEMMODE_POSTINIT) {
       println("Refreshing port list...");
       refreshPortList();
     }
@@ -573,7 +570,7 @@ class ControlPanel {
               cp5.get(Textfield.class, "staticIPAddress").setVisible(false);
               cp5.get(MenuList.class, "wifiList").setVisible(true);
             }
-            if(wcBox.isShowing){
+            if (wcBox.isShowing) {
               wcBox.draw();
             }
             sampleRateCytonBox.draw();
@@ -606,7 +603,6 @@ class ControlPanel {
         cp5.get(MenuList.class, "sdTimes").setVisible(false);
         cp5Popup.get(MenuList.class, "channelList").setVisible(false);
         cp5Popup.get(MenuList.class, "pollList").setVisible(false);
-
       } else if (eegDataSource == DATASOURCE_SYNTHETIC) {  //synthetic
         //set other CP5 controllers invisible
         // hideAllBoxes();
@@ -633,7 +629,7 @@ class ControlPanel {
               cp5.get(Textfield.class, "staticIPAddress").setVisible(false);
               cp5.get(MenuList.class, "wifiList").setVisible(true);
             }
-            if(wcBox.isShowing){
+            if (wcBox.isShowing) {
               wcBox.draw();
             }
             latencyGanglionBox.y = dataLogBoxGanglion.y + dataLogBoxGanglion.h;
@@ -702,7 +698,7 @@ class ControlPanel {
     if (hub.isPortOpen()) hub.closePort();
   }
 
-  public void refreshPortList(){
+  public void refreshPortList() {
     serialPorts = new String[Serial.list().length];
     serialPorts = Serial.list();
     serialList.items.clear();
@@ -740,44 +736,44 @@ class ControlPanel {
     if (systemMode != 10) {
 
       if ((eegDataSource == DATASOURCE_CYTON || eegDataSource == DATASOURCE_GANGLION) && (cyton.isWifi() || ganglion.isWifi())) {
-        if(getIpAddress.isMouseHere()) {
+        if (getIpAddress.isMouseHere()) {
           getIpAddress.setIsActive(true);
           getIpAddress.wasPressed = true;
         }
 
-        if(getFirmwareVersion.isMouseHere()) {
+        if (getFirmwareVersion.isMouseHere()) {
           getFirmwareVersion.setIsActive(true);
           getFirmwareVersion.wasPressed = true;
         }
 
-        if(getMacAddress.isMouseHere()) {
+        if (getMacAddress.isMouseHere()) {
           getMacAddress.setIsActive(true);
           getMacAddress.wasPressed = true;
         }
 
-        if(eraseCredentials.isMouseHere()) {
+        if (eraseCredentials.isMouseHere()) {
           eraseCredentials.setIsActive(true);
           eraseCredentials.wasPressed = true;
         }
 
-        if(getTypeOfAttachedBoard.isMouseHere()) {
+        if (getTypeOfAttachedBoard.isMouseHere()) {
           getTypeOfAttachedBoard.setIsActive(true);
           getTypeOfAttachedBoard.wasPressed = true;
         }
 
-        if (popOutWifiConfigButton.isMouseHere()){
+        if (popOutWifiConfigButton.isMouseHere()) {
           popOutWifiConfigButton.setIsActive(true);
           popOutWifiConfigButton.wasPressed = true;
         }
 
-        if(wifiIPAddressDyanmic.isMouseHere()) {
+        if (wifiIPAddressDyanmic.isMouseHere()) {
           wifiIPAddressDyanmic.setIsActive(true);
           wifiIPAddressDyanmic.wasPressed = true;
           wifiIPAddressDyanmic.color_notPressed = isSelected_color;
           wifiIPAddressStatic.color_notPressed = autoFileName.color_notPressed;
         }
 
-        if(wifiIPAddressStatic.isMouseHere()) {
+        if (wifiIPAddressStatic.isMouseHere()) {
           wifiIPAddressStatic.setIsActive(true);
           wifiIPAddressStatic.wasPressed = true;
           wifiIPAddressStatic.color_notPressed = isSelected_color;
@@ -788,7 +784,7 @@ class ControlPanel {
       //active buttons during DATASOURCE_CYTON
       if (eegDataSource == DATASOURCE_CYTON) {
         if (cyton.isSerial()) {
-          if (popOutRadioConfigButton.isMouseHere()){
+          if (popOutRadioConfigButton.isMouseHere()) {
             popOutRadioConfigButton.setIsActive(true);
             popOutRadioConfigButton.wasPressed = true;
           }
@@ -840,17 +836,17 @@ class ControlPanel {
           chanButton16.color_notPressed = isSelected_color;
         }
 
-        if (getChannel.isMouseHere()){
+        if (getChannel.isMouseHere()) {
           getChannel.setIsActive(true);
           getChannel.wasPressed = true;
         }
 
-        if (setChannel.isMouseHere()){
+        if (setChannel.isMouseHere()) {
           setChannel.setIsActive(true);
           setChannel.wasPressed = true;
         }
 
-        if (ovrChannel.isMouseHere()){
+        if (ovrChannel.isMouseHere()) {
           ovrChannel.setIsActive(true);
           ovrChannel.wasPressed = true;
         }
@@ -871,12 +867,12 @@ class ControlPanel {
           protocolSerialCyton.color_notPressed = isSelected_color;
         }
 
-        if (autoscan.isMouseHere()){
+        if (autoscan.isMouseHere()) {
           autoscan.setIsActive(true);
           autoscan.wasPressed = true;
         }
 
-        if (systemStatus.isMouseHere()){
+        if (systemStatus.isMouseHere()) {
           systemStatus.setIsActive(true);
           systemStatus.wasPressed = true;
         }
@@ -1138,7 +1134,6 @@ class ControlPanel {
           synthChanButton8.color_notPressed = autoFileName.color_notPressed; //default color of button
         }
       }
-
     }
     // output("Text File Name: " + cp5.get(Textfield.class,"fileName").getText());
   }
@@ -1146,14 +1141,13 @@ class ControlPanel {
   //mouse released in control panel
   public void CPmouseReleased() {
     //verbosePrint("CPMouseReleased: CPmouseReleased start...");
-    if(popOutRadioConfigButton.isMouseHere() && popOutRadioConfigButton.wasPressed){
+    if (popOutRadioConfigButton.isMouseHere() && popOutRadioConfigButton.wasPressed) {
       popOutRadioConfigButton.wasPressed = false;
       popOutRadioConfigButton.setIsActive(false);
       if (cyton.isSerial()) {
-        if(rcBox.isShowing){
+        if (rcBox.isShowing) {
           hideRadioPopoutBox();
-        }
-        else{
+        } else {
           rcBox.isShowing = true;
           popOutRadioConfigButton.setString("<");
         }
@@ -1161,43 +1155,43 @@ class ControlPanel {
     }
 
     if (rcBox.isShowing) {
-      if(getChannel.isMouseHere() && getChannel.wasPressed){
+      if (getChannel.isMouseHere() && getChannel.wasPressed) {
         // if(board != null) // Radios_Config will handle creating the serial port JAM 1/2017
         get_channel(rcBox);
         getChannel.wasPressed=false;
         getChannel.setIsActive(false);
       }
 
-      if (setChannel.isMouseHere() && setChannel.wasPressed){
+      if (setChannel.isMouseHere() && setChannel.wasPressed) {
         channelPopup.setClicked(true);
         pollPopup.setClicked(false);
         setChannel.setIsActive(false);
       }
 
-      if (ovrChannel.isMouseHere() && ovrChannel.wasPressed){
+      if (ovrChannel.isMouseHere() && ovrChannel.wasPressed) {
         channelPopup.setClicked(true);
         pollPopup.setClicked(false);
         ovrChannel.setIsActive(false);
       }
 
-      if(autoscan.isMouseHere() && autoscan.wasPressed){
+      if (autoscan.isMouseHere() && autoscan.wasPressed) {
         autoscan.wasPressed = false;
         autoscan.setIsActive(false);
         scan_channels(rcBox);
       }
 
-      if(systemStatus.isMouseHere() && systemStatus.wasPressed){
+      if (systemStatus.isMouseHere() && systemStatus.wasPressed) {
         system_status(rcBox);
         systemStatus.setIsActive(false);
         systemStatus.wasPressed = false;
       }
     }
 
-    if(popOutWifiConfigButton.isMouseHere() && popOutWifiConfigButton.wasPressed){
+    if (popOutWifiConfigButton.isMouseHere() && popOutWifiConfigButton.wasPressed) {
       popOutWifiConfigButton.wasPressed = false;
       popOutWifiConfigButton.setIsActive(false);
       if (cyton.isWifi() || ganglion.isWifi()) {
-        if(wcBox.isShowing){
+        if (wcBox.isShowing) {
           hideWifiPopoutBox();
         } else {
           if (hub.getWiFiStyle() == WIFI_STATIC) {
@@ -1222,31 +1216,31 @@ class ControlPanel {
     }
 
     if (wcBox.isShowing) {
-      if(getIpAddress.isMouseHere() && getIpAddress.wasPressed){
+      if (getIpAddress.isMouseHere() && getIpAddress.wasPressed) {
         hub.getWifiInfo(TCP_WIFI_GET_IP_ADDRESS);
         getIpAddress.wasPressed = false;
         getIpAddress.setIsActive(false);
       }
 
-      if(getFirmwareVersion.isMouseHere() && getFirmwareVersion.wasPressed){
+      if (getFirmwareVersion.isMouseHere() && getFirmwareVersion.wasPressed) {
         hub.getWifiInfo(TCP_WIFI_GET_FIRMWARE_VERSION);
         getFirmwareVersion.wasPressed = false;
         getFirmwareVersion.setIsActive(false);
       }
 
-      if(getMacAddress.isMouseHere() && getMacAddress.wasPressed){
+      if (getMacAddress.isMouseHere() && getMacAddress.wasPressed) {
         hub.getWifiInfo(TCP_WIFI_GET_MAC_ADDRESS);
         getMacAddress.wasPressed = false;
         getMacAddress.setIsActive(false);
       }
 
-      if(eraseCredentials.isMouseHere() && eraseCredentials.wasPressed){
+      if (eraseCredentials.isMouseHere() && eraseCredentials.wasPressed) {
         hub.getWifiInfo(TCP_WIFI_ERASE_CREDENTIALS);
         eraseCredentials.wasPressed=false;
         eraseCredentials.setIsActive(false);
       }
 
-      if(getTypeOfAttachedBoard.isMouseHere() && getTypeOfAttachedBoard.wasPressed){
+      if (getTypeOfAttachedBoard.isMouseHere() && getTypeOfAttachedBoard.wasPressed) {
         // Wifi_Config will handle creating the connection
         hub.getWifiInfo(TCP_WIFI_GET_TYPE_OF_ATTACHED_BOARD);
         getTypeOfAttachedBoard.wasPressed=false;
@@ -1292,7 +1286,7 @@ class ControlPanel {
       }
     }
 
-    if(wifiIPAddressDyanmic.isMouseHere() && wifiIPAddressDyanmic.wasPressed) {
+    if (wifiIPAddressDyanmic.isMouseHere() && wifiIPAddressDyanmic.wasPressed) {
       hub.setWiFiStyle(WIFI_DYNAMIC);
       wifiBox.h = 200;
       String output = "Using " + (hub.getWiFiStyle() == WIFI_STATIC ? "Static" : "Dynamic") + " IP address of the WiFi Shield!";
@@ -1300,7 +1294,7 @@ class ControlPanel {
       println(output);
     }
 
-    if(wifiIPAddressStatic.isMouseHere() && wifiIPAddressStatic.wasPressed) {
+    if (wifiIPAddressStatic.isMouseHere() && wifiIPAddressStatic.wasPressed) {
       hub.setWiFiStyle(WIFI_STATIC);
       wifiBox.h = 120;
       String output = "Using " + (hub.getWiFiStyle() == WIFI_STATIC ? "Static" : "Dynamic") + " IP address of the WiFi Shield!";
@@ -1621,83 +1615,95 @@ class ControlPanel {
   }
 };
 
-public void initButtonPressed(){
-  if (initSystemButton.but_txt == "START SYSTEM") {
-      if ((eegDataSource == DATASOURCE_CYTON && cyton.getInterface() == INTERFACE_NONE) || (eegDataSource == DATASOURCE_GANGLION && ganglion.getInterface() == INTERFACE_NONE)) {
-        output("No Transfer Protocol selected. Please select your Transfer Protocol and retry system initiation.");
-        initSystemButton.wasPressed = false;
-        initSystemButton.setIsActive(false);
-        return;
-      } else if (eegDataSource == DATASOURCE_CYTON && cyton.getInterface() == INTERFACE_SERIAL && openBCI_portName == "N/A") { //if data source == normal && if no serial port selected OR no SD setting selected
-        output("No Serial/COM port selected. Please select your Serial/COM port and retry system initiation.");
-        initSystemButton.wasPressed = false;
-        initSystemButton.setIsActive(false);
-        return;
-      } else if (eegDataSource == DATASOURCE_CYTON && cyton.getInterface() == INTERFACE_HUB_WIFI && wifi_portName == "N/A" && hub.getWiFiStyle() == WIFI_DYNAMIC) {
-        output("No Wifi Shield selected. Please select your Wifi Shield and retry system initiation.");
-        initSystemButton.wasPressed = false;
-        initSystemButton.setIsActive(false);
-        return;
-      } else if (eegDataSource == DATASOURCE_PLAYBACKFILE && playbackData_fname == "N/A") { //if data source == playback && playback file == 'N/A'
-        output("No playback file selected. Please select a playback file and retry system initiation.");        // tell user that they need to select a file before the system can be started
-        initSystemButton.wasPressed = false;
-        initSystemButton.setIsActive(false);
-        return;
-      } else if (eegDataSource == DATASOURCE_GANGLION && (ganglion.getInterface() == INTERFACE_HUB_BLE || ganglion.getInterface() == INTERFACE_HUB_BLED112) && ganglion_portName == "N/A") {
-        output("No BLE device selected. Please select your Ganglion device and retry system initiation.");
-        initSystemButton.wasPressed = false;
-        initSystemButton.setIsActive(false);
-        return;
-      } else if (eegDataSource == DATASOURCE_GANGLION && ganglion.getInterface() == INTERFACE_HUB_WIFI && wifi_portName == "N/A" && hub.getWiFiStyle() == WIFI_DYNAMIC) {
-        output("No Wifi Shield selected. Please select your Wifi Shield and retry system initiation.");
-        initSystemButton.wasPressed = false;
-        initSystemButton.setIsActive(false);
-        return;
-      } else if (eegDataSource == -1) {//if no data source selected
-        output("No DATA SOURCE selected. Please select a DATA SOURCE and retry system initiation.");//tell user they must select a data source before initiating system
-        initSystemButton.wasPressed = false;
-        initSystemButton.setIsActive(false);
-        return;
-      } else { //otherwise, initiate system!
-        //verbosePrint("ControlPanel: CPmouseReleased: init");
-        initSystemButton.setString("STOP SYSTEM");
-        //global steps to START SYSTEM
-        // prepare the serial port
-        if (eegDataSource == DATASOURCE_CYTON) {
-          verbosePrint("ControlPanel — port is open: " + cyton.isPortOpen());
-          if (cyton.isPortOpen() == true) {
-            cyton.closePort();
-          }
-        } else if(eegDataSource == DATASOURCE_GANGLION){
-          verbosePrint("ControlPanel — port is open: " + ganglion.isPortOpen());
-          if (ganglion.isPortOpen()) {
-            ganglion.closePort();
-          }
-        }
-        if(eegDataSource == DATASOURCE_GANGLION){
-          fileName = cp5.get(Textfield.class, "fileNameGanglion").getText(); // store the current text field value of "File Name" to be passed along to dataFiles
-        } else if(eegDataSource == DATASOURCE_CYTON){
-          fileName = cp5.get(Textfield.class, "fileName").getText(); // store the current text field value of "File Name" to be passed along to dataFiles
-        }
-        if (hub.getWiFiStyle() == WIFI_STATIC && (cyton.isWifi() || ganglion.isWifi())) {
-          wifi_ipAddress = cp5.get(Textfield.class, "staticIPAddress").getText();
-          println("Static IP address of " + wifi_ipAddress);
-        }
-        midInit = true;
-        println("initSystem yoo");
-        initSystem(); //calls the initSystem() funciton of the OpenBCI_GUI.pde file
-      }
-    }
+public void initButtonPressed() {
+  //eegDataSource = DATASOURCE_GANGLION;  //  ***HARD CODED.  REMOVE BEFORE PUBLISHING***
+  //ganglion.setInterface(INTERFACE_HUB_BLE);
 
-    //if system is already active ... stop system and flip button state back
-    else {
-      outputInfo("Learn how to use this application and more at docs.openbci.com");
-      initSystemButton.setString("START SYSTEM");
-      cp5.get(Textfield.class, "fileName").setText(getDateString()); //creates new data file name so that you don't accidentally overwrite the old one
-      cp5.get(Textfield.class, "fileNameGanglion").setText(getDateString()); //creates new data file name so that you don't accidentally overwrite the old one
-      cp5.get(Textfield.class, "staticIPAddress").setText(wifi_ipAddress); // Fills the last (or default) IP address
-      haltSystem();
+  //hub.searchDeviceStart();
+  //ganglion_portName = "Ganglion-9b93";
+  //while(hub.isSearching()) {    /// works after "search" button is clicked.  Find that code and run it before this code.
+  //  println("waiting...");
+  //}
+
+  //  hub.connectBLE(ganglion_portName);
+  //    hubInit();
+  
+  if (initSystemButton.but_txt == "START SYSTEM") {
+    if ((eegDataSource == DATASOURCE_CYTON && cyton.getInterface() == INTERFACE_NONE) || (eegDataSource == DATASOURCE_GANGLION && ganglion.getInterface() == INTERFACE_NONE)) {
+      output("No Transfer Protocol selected. Please select your Transfer Protocol and retry system initiation.");
+      initSystemButton.wasPressed = false;
+      initSystemButton.setIsActive(false);
+      return;
+    } else if (eegDataSource == DATASOURCE_CYTON && cyton.getInterface() == INTERFACE_SERIAL && openBCI_portName == "N/A") { //if data source == normal && if no serial port selected OR no SD setting selected
+      output("No Serial/COM port selected. Please select your Serial/COM port and retry system initiation.");
+      initSystemButton.wasPressed = false;
+      initSystemButton.setIsActive(false);
+      return;
+    } else if (eegDataSource == DATASOURCE_CYTON && cyton.getInterface() == INTERFACE_HUB_WIFI && wifi_portName == "N/A" && hub.getWiFiStyle() == WIFI_DYNAMIC) {
+      output("No Wifi Shield selected. Please select your Wifi Shield and retry system initiation.");
+      initSystemButton.wasPressed = false;
+      initSystemButton.setIsActive(false);
+      return;
+    } else if (eegDataSource == DATASOURCE_PLAYBACKFILE && playbackData_fname == "N/A") { //if data source == playback && playback file == 'N/A'
+      output("No playback file selected. Please select a playback file and retry system initiation.");        // tell user that they need to select a file before the system can be started
+      initSystemButton.wasPressed = false;
+      initSystemButton.setIsActive(false);
+      return;
+    } else if (eegDataSource == DATASOURCE_GANGLION && (ganglion.getInterface() == INTERFACE_HUB_BLE || ganglion.getInterface() == INTERFACE_HUB_BLED112) && ganglion_portName == "N/A") {
+      output("No BLE device selected. Please select your Ganglion device and retry system initiation.");
+      initSystemButton.wasPressed = false;
+      initSystemButton.setIsActive(false);
+      return;
+    } else if (eegDataSource == DATASOURCE_GANGLION && ganglion.getInterface() == INTERFACE_HUB_WIFI && wifi_portName == "N/A" && hub.getWiFiStyle() == WIFI_DYNAMIC) {
+      output("No Wifi Shield selected. Please select your Wifi Shield and retry system initiation.");
+      initSystemButton.wasPressed = false;
+      initSystemButton.setIsActive(false);
+      return;
+    } else if (eegDataSource == -1) {//if no data source selected
+      output("No DATA SOURCE selected. Please select a DATA SOURCE and retry system initiation.");//tell user they must select a data source before initiating system
+      initSystemButton.wasPressed = false;
+      initSystemButton.setIsActive(false);
+      return;
+    } else { //otherwise, initiate system!
+      //verbosePrint("ControlPanel: CPmouseReleased: init");
+      initSystemButton.setString("STOP SYSTEM");
+      //global steps to START SYSTEM
+      // prepare the serial port
+      if (eegDataSource == DATASOURCE_CYTON) {
+        verbosePrint("ControlPanel — port is open: " + cyton.isPortOpen());
+        if (cyton.isPortOpen() == true) {
+          cyton.closePort();
+        }
+      } else if (eegDataSource == DATASOURCE_GANGLION) {
+        verbosePrint("ControlPanel — port is open: " + ganglion.isPortOpen());
+        if (ganglion.isPortOpen()) {
+          ganglion.closePort();
+        }
+      }
+      if (eegDataSource == DATASOURCE_GANGLION) {
+        fileName = cp5.get(Textfield.class, "fileNameGanglion").getText(); // store the current text field value of "File Name" to be passed along to dataFiles
+      } else if (eegDataSource == DATASOURCE_CYTON) {
+        fileName = cp5.get(Textfield.class, "fileName").getText(); // store the current text field value of "File Name" to be passed along to dataFiles
+      }
+      if (hub.getWiFiStyle() == WIFI_STATIC && (cyton.isWifi() || ganglion.isWifi())) {
+        wifi_ipAddress = cp5.get(Textfield.class, "staticIPAddress").getText();
+        println("Static IP address of " + wifi_ipAddress);
+      }
+      midInit = true;
+      println("initSystem yoo");
+      initSystem(); //calls the initSystem() funciton of the OpenBCI_GUI.pde file
     }
+  }
+
+  //if system is already active ... stop system and flip button state back
+  else {
+    outputInfo("Learn how to use this application and more at docs.openbci.com");
+    initSystemButton.setString("START SYSTEM");
+    cp5.get(Textfield.class, "fileName").setText(getDateString()); //creates new data file name so that you don't accidentally overwrite the old one
+    cp5.get(Textfield.class, "fileNameGanglion").setText(getDateString()); //creates new data file name so that you don't accidentally overwrite the old one
+    cp5.get(Textfield.class, "staticIPAddress").setText(wifi_ipAddress); // Fills the last (or default) IP address
+    haltSystem();
+  }
 }
 
 void updateToNChan(int _nchan) {
@@ -1712,7 +1718,8 @@ void updateToNChan(int _nchan) {
   updateChannelArrays(nchan); //make sure to reinitialize the channel arrays with the right number of channels
 }
 
-public void set_channel_popup(){;
+public void set_channel_popup() {
+  ;
 }
 
 
@@ -1750,7 +1757,6 @@ class DataSourceBox {
   }
 
   public void update() {
-
   }
 
   public void draw() {
@@ -1785,7 +1791,7 @@ class SerialBox {
 
     // autoconnect = new Button(x + padding, y + padding*3 + 4, w - padding*2, 24, "AUTOCONNECT AND START SYSTEM", fontInfo.buttonLabel_size);
     refreshPort = new Button (x + padding, y + padding*4 + 72 + 8, w - padding*2, 24, "REFRESH LIST", fontInfo.buttonLabel_size);
-    popOutRadioConfigButton = new Button(x+padding + (w-padding*4), y + padding, 20,20,">",fontInfo.buttonLabel_size);
+    popOutRadioConfigButton = new Button(x+padding + (w-padding*4), y + padding, 20, 20, ">", fontInfo.buttonLabel_size);
 
     serialList = new MenuList(cp5, "serialList", w - padding*2, 72, p4);
     // println(w-padding*2);
@@ -1848,10 +1854,9 @@ class BLEBox {
 
   public void update() {
     // Quick check to see if there are just more or less devices in general
-
   }
 
-  public void updateListPosition(){
+  public void updateListPosition() {
     bleList.setPosition(x + padding, y + padding * 3);
   }
 
@@ -1869,8 +1874,8 @@ class BLEBox {
 
     refreshBLE.draw();
 
-    if(isHubInitialized && isHubObjectInitialized && ganglion.isBLE() && hub.isSearching()){
-      image(loadingGIF_blue, w + 225,  y + padding*4 + 72 + 10, 20, 20);
+    if (isHubInitialized && isHubObjectInitialized && ganglion.isBLE() && hub.isSearching()) {
+      image(loadingGIF_blue, w + 225, y + padding*4 + 72 + 10, 20, 20);
       refreshBLE.setString("SEARCHING...");
     } else {
       refreshBLE.setString("START SEARCH");
@@ -1907,7 +1912,7 @@ class WifiBox {
 
     refreshWifi = new Button (x + padding, y + padding*5 + 72 + 8 + 24, w - padding*5, 24, "START SEARCH", fontInfo.buttonLabel_size);
     wifiList = new MenuList(cp5, "wifiList", w - padding*2, 72 + 8, p4);
-    popOutWifiConfigButton = new Button(x+padding + (w-padding*4), y + padding, 20,20,">",fontInfo.buttonLabel_size);
+    popOutWifiConfigButton = new Button(x+padding + (w-padding*4), y + padding, 20, 20, ">", fontInfo.buttonLabel_size);
 
     // println(w-padding*2);
     wifiList.setPosition(x + padding, y + padding*4 + 8 + 24);
@@ -1933,10 +1938,9 @@ class WifiBox {
 
   public void update() {
     // Quick check to see if there are just more or less devices in general
-
   }
 
-  public void updateListPosition(){
+  public void updateListPosition() {
     wifiList.setPosition(x + padding, y + padding * 3);
   }
 
@@ -1974,8 +1978,8 @@ class WifiBox {
 
       refreshWifi.draw();
       refreshWifi.but_y = y + h - padding - 24;
-      if(isHubInitialized && isHubObjectInitialized && (ganglion.isWifi() || cyton.isWifi()) && hub.isSearching()){
-        image(loadingGIF_blue, w + 225,  refreshWifi.but_y + 4, 20, 20);
+      if (isHubInitialized && isHubObjectInitialized && (ganglion.isWifi() || cyton.isWifi()) && hub.isSearching()) {
+        image(loadingGIF_blue, w + 225, refreshWifi.but_y + 4, 20, 20);
         refreshWifi.setString("SEARCHING...");
       } else {
         refreshWifi.setString("START SEARCH");
@@ -2016,7 +2020,8 @@ class InterfaceBoxCyton {
     protocolWifiCyton = new Button (x + padding, y + padding * 4 + 24, w - padding * 2, 24, "Wifi (from Wifi Shield)", fontInfo.buttonLabel_size);
   }
 
-  public void update() {}
+  public void update() {
+  }
 
   public void draw() {
     pushStyle();
@@ -2056,7 +2061,8 @@ class InterfaceBoxGanglion {
     }
   }
 
-  public void update() {}
+  public void update() {
+  }
 
   public void draw() {
     pushStyle();
@@ -2137,7 +2143,8 @@ class DataLogBox {
     textFont(h3, 16);
     textAlign(LEFT, TOP);
     text("DATA LOG FILE", x + padding, y + padding);
-    textFont(p4, 14);;
+    textFont(p4, 14);
+    ;
     text("File Name", x + padding, y + padding*2 + 14);
     popStyle();
     cp5.get(Textfield.class, "fileName").setPosition(x + 90, y + 32);
@@ -2211,7 +2218,8 @@ class DataLogBoxGanglion {
     textFont(h3, 16);
     textAlign(LEFT, TOP);
     text("DATA LOG FILE", x + padding, y + padding);
-    textFont(p4, 14);;
+    textFont(p4, 14);
+    ;
     text("File Name", x + padding, y + padding*2 + 14);
     popStyle();
     cp5.get(Textfield.class, "fileNameGanglion").setPosition(x + 90, y + 32);
@@ -2729,7 +2737,6 @@ class SDBox {
     popStyle();
     sdTimes.setPosition(x + padding, y + padding*2 + 13);
     //the drawing of the sdTimes is handled earlier in ControlPanel.draw()
-
   }
 };
 
@@ -2760,7 +2767,8 @@ class RadioConfigBox {
     autoscan.setHelpText("Scan through channels and connect to a nearby Cyton");
     systemStatus.setHelpText("Get the connection status of your Cyton system");
   }
-  public void update() {}
+  public void update() {
+  }
 
   public void draw() {
     pushStyle();
@@ -2782,7 +2790,7 @@ class RadioConfigBox {
     this.print_onscreen(last_message);
   }
 
-  public void print_onscreen(String localstring){
+  public void print_onscreen(String localstring) {
     textAlign(LEFT);
     fill(bgColor);
     rect(x + padding, y + (padding*8) + 13 + (24*2), w-(padding*2), 135 - 21 - padding);
@@ -2791,7 +2799,7 @@ class RadioConfigBox {
     this.last_message = localstring;
   }
 
-  public void print_lastmessage(){
+  public void print_lastmessage() {
     fill(bgColor);
     rect(x + padding, y + (padding*8) + 13 + (24*2), w-(padding*2), 135 - 21 - padding);
     fill(255);
@@ -2829,7 +2837,8 @@ class WifiConfigBox {
     getFirmwareVersion.setHelpText("Get the firmware version of the WiFi Shield");
     eraseCredentials.setHelpText("Erase the store credentials on the WiFi Shield to join another wireless network. Always remove WiFi Shield from OpenBCI board prior to erase and WiFi Shield will become a hotspot again.");
   }
-  public void update() {}
+  public void update() {
+  }
 
   public void draw() {
     pushStyle();
@@ -2855,7 +2864,7 @@ class WifiConfigBox {
     last_message = str;
   }
 
-  public void print_onscreen(String localstring){
+  public void print_onscreen(String localstring) {
     textAlign(LEFT);
     fill(bgColor);
     rect(x + padding, y + (padding*8) + 13 + (24*2), w-(padding*2), 135 - 21 - padding);
@@ -2871,7 +2880,7 @@ class WifiConfigBox {
     // text(localstring, x + padding + 10, y + (padding*8) + 18 + (24*2) + 15, (w-padding*3 ), 135 - 24 - padding -15);
   }
 
-  public void print_lastmessage(){
+  public void print_lastmessage() {
 
     fill(bgColor);
     rect(x + padding, y + (padding*8) + 13 + (24*2), w-(padding*2), 135 - 21 - padding);
@@ -2960,10 +2969,13 @@ class ChannelPopup {
     // autoconnect.draw();
   }
 
-  public void setClicked(boolean click){this.clicked = click; }
+  public void setClicked(boolean click) {
+    this.clicked = click;
+  }
 
-  public boolean wasClicked(){return this.clicked;}
-
+  public boolean wasClicked() {
+    return this.clicked;
+  }
 };
 
 class PollPopup {
@@ -3011,10 +3023,13 @@ class PollPopup {
     // autoconnect.draw();
   }
 
-  public void setClicked(boolean click){this.clicked = click; }
+  public void setClicked(boolean click) {
+    this.clicked = click;
+  }
 
-  public boolean wasClicked(){return this.clicked;}
-
+  public boolean wasClicked() {
+    return this.clicked;
+  }
 };
 
 
@@ -3100,7 +3115,7 @@ public class MenuList extends controlP5.Controller {
 
     super( c, theName, 0, 0, theWidth, theHeight );
     c.register( this );
-    menu = createGraphics(getWidth(),getHeight());
+    menu = createGraphics(getWidth(), getHeight());
 
     menuFont = p4;
     getValueLabel().setSize(14);
@@ -3120,18 +3135,17 @@ public class MenuList extends controlP5.Controller {
           menu.beginDraw();
           int len = -(itemHeight * items.size()) + getHeight();
           int ty;
-          if(len != 0){
+          if (len != 0) {
             ty = int(map(pos, len, 0, getHeight() - scrollerLength - 2, 2 ) );
           } else {
             ty = 0;
           }
           menu.fill(bgColor, 100);
-          if(ty > 0){
+          if (ty > 0) {
             menu.rect(getWidth()-scrollerWidth-2, ty, scrollerWidth, scrollerLength );
           }
           menu.endDraw();
-        }
-        else {
+        } else {
           // if(drawHand){
           //   drawHand = false;
           //   cursor(ARROW);
@@ -3160,9 +3174,9 @@ public class MenuList extends controlP5.Controller {
     menu.pushMatrix();
 
     int i0;
-    if((itemHeight * items.size()) != 0){
+    if ((itemHeight * items.size()) != 0) {
       i0 = PApplet.max( 0, int(map(-pos, 0, itemHeight * items.size(), 0, items.size())));
-    } else{
+    } else {
       i0 = 0;
     }
     int range = ceil((float(getHeight())/float(itemHeight))+1);
@@ -3192,11 +3206,10 @@ public class MenuList extends controlP5.Controller {
       try {
         menu.text(m.get("headline").toString(), 8, itemHeight - padding); // 5/17
         menu.translate( 0, itemHeight );
-      } catch(Exception e){
+      } 
+      catch(Exception e) {
         println("Nothing in list...");
       }
-
-
     }
     menu.popMatrix();
     menu.popMatrix();
@@ -3209,23 +3222,25 @@ public class MenuList extends controlP5.Controller {
    */
   public void onClick() {
     println("click");
-    try{
+    try {
       if (getPointer().x()>getWidth()-scrollerWidth) {
-        if(getHeight() != 0){
+        if (getHeight() != 0) {
           npos= -map(getPointer().y(), 0, getHeight(), 0, items.size()*itemHeight);
         }
         updateMenu = true;
       } else {
         int len = itemHeight * items.size();
         int index = 0;
-        if(len != 0){
+        if (len != 0) {
           index = int( map( getPointer().y() - pos, 0, len, 0, items.size() ) ) ;
         }
         setValue(index);
         activeItem = index;
       }
       updateMenu = true;
-    } finally{}
+    } 
+    finally {
+    }
     // catch(IOException e){
     //   println("Nothing to click...");
     // }
@@ -3237,7 +3252,7 @@ public class MenuList extends controlP5.Controller {
     } else {
       int len = itemHeight * items.size();
       int index = 0;
-      if(len != 0){
+      if (len != 0) {
         index = int( map( getPointer().y() - pos, 0, len, 0, items.size() ) ) ;
       }
       hoverItem = index;
