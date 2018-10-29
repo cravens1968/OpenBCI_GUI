@@ -1,4 +1,4 @@
-///////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////// //<>// //<>// //<>// //<>//
 //
 // This class configures and manages the connection to the OpenBCI Ganglion.
 // The connection is implemented via a TCP connection to a TCP port.
@@ -24,12 +24,12 @@ void clientEvent(Client someClient) {
   char newChar;
 
   newChar = hub.tcpClient.readChar();
-  while(newChar != (char)-1) {
+  while (newChar != (char)-1) {
     p = hub.tcpBufferPositon;
     hub.tcpBuffer[p] = newChar;
     hub.tcpBufferPositon++;
 
-    if(p > 2) {
+    if (p > 2) {
       String posMatch  = new String(hub.tcpBuffer, p - 2, 3);
       if (posMatch.equals(TCP_STOP)) {
         if (!hub.nodeProcessHandshakeComplete) {
@@ -79,8 +79,8 @@ final static String TCP_CMD_CONNECT = "c";
 final static String TCP_CMD_COMMAND = "k";
 final static String TCP_CMD_DISCONNECT = "d";
 final static String TCP_CMD_DATA = "t";
-final static String TCP_CMD_ERROR = "e"; //<>//
-final static String TCP_CMD_EXAMINE = "x"; //<>//
+final static String TCP_CMD_ERROR = "e";
+final static String TCP_CMD_EXAMINE = "x";
 final static String TCP_CMD_IMPEDANCE = "i";
 final static String TCP_CMD_LOG = "l";
 final static String TCP_CMD_PROTOCOL = "p";
@@ -230,16 +230,36 @@ class Hub {
   private String curBLEHardware = BLE_HARDWARE_NOBLE;
 
   // Getters
-  public int get_state() { return state; }
-  public int getLatency() { return curLatency; }
-  public String getCurBLEHardware() { return curBLEHardware; }
-  public String getWifiInternetProtocol() { return curInternetProtocol; }
-  public String getWiFiStyle() { return curWiFiStyle; }
-  public boolean isPortOpen() { return portIsOpen; }
-  public boolean isHubRunning() { return hubRunning; }
-  public boolean isSearching() { return searching; }
-  public boolean isCheckingImpedance() { return checkingImpedance; }
-  public boolean isAccelModeActive() { return accelModeActive; }
+  public int get_state() { 
+    return state;
+  }
+  public int getLatency() { 
+    return curLatency;
+  }
+  public String getCurBLEHardware() { 
+    return curBLEHardware;
+  }
+  public String getWifiInternetProtocol() { 
+    return curInternetProtocol;
+  }
+  public String getWiFiStyle() { 
+    return curWiFiStyle;
+  }
+  public boolean isPortOpen() { 
+    return portIsOpen;
+  }
+  public boolean isHubRunning() { 
+    return hubRunning;
+  }
+  public boolean isSearching() { 
+    return searching;
+  }
+  public boolean isCheckingImpedance() { 
+    return checkingImpedance;
+  }
+  public boolean isAccelModeActive() { 
+    return accelModeActive;
+  }
   public void setLatency(int latency) {
     curLatency = latency;
     println("Setting Latency to " + latency);
@@ -260,13 +280,13 @@ class Hub {
   private PApplet mainApplet;
 
   //constructors
-  Hub() {};  //only use this if you simply want access to some of the constants
+  Hub() {
+  };  //only use this if you simply want access to some of the constants
   Hub(PApplet applet) {
     mainApplet = applet;
 
     // Able to start tcpClient connection?
     startTCPClient(mainApplet);
-
   }
 
   public void initDataPackets(int _nEEGValuesPerPacket, int _nAuxValuesPerPacket) {
@@ -274,10 +294,10 @@ class Hub {
     nAuxValuesPerPacket = _nAuxValuesPerPacket;
     // For storing data into
     dataPacket = new DataPacket_ADS1299(nEEGValuesPerPacket, nAuxValuesPerPacket);  //this should always be 8 channels
-    for(int i = 0; i < nEEGValuesPerPacket; i++) {
+    for (int i = 0; i < nEEGValuesPerPacket; i++) {
       dataPacket.values[i] = 0;
     }
-    for(int i = 0; i < nAuxValuesPerPacket; i++){
+    for (int i = 0; i < nAuxValuesPerPacket; i++) {
       dataPacket.auxValues[i] = 0;
     }
   }
@@ -291,7 +311,8 @@ class Hub {
     try {
       tcpClient = new Client(applet, tcpHubIP, tcpHubPort);
       return true;
-    } catch (Exception e) {
+    } 
+    catch (Exception e) {
       println("startTCPClient: ConnectException: " + e);
       return false;
     }
@@ -306,7 +327,8 @@ class Hub {
       write(TCP_CMD_STATUS + TCP_STOP);
       waitingForResponse = true;
       return true;
-    } catch (NullPointerException E) {
+    } 
+    catch (NullPointerException E) {
       // The tcp client is not initalized, try now
 
       return false;
@@ -322,63 +344,63 @@ class Hub {
     // println(msg);
     String[] list = split(msg, ',');
     switch (list[0].charAt(0)) {
-      case 'b': // board type setting
-        processBoardType(msg);
-        break;
-      case 'c': // Connect
-        processConnect(msg);
-        break;
-      case 'a': // Accel
-        processAccel(msg);
-        break;
-      case 'd': // Disconnect
-        processDisconnect(msg);
-        break;
-      case 'i': // Impedance
-        processImpedance(msg);
-        break;
-      case 't': // Data
-        processData(msg);
-        break;
-      case 'e': // Error
-        int code = int(list[1]);
-        println("Hub: parseMessage: error: " + list[2]);
-        if (code == RESP_ERROR_COMMAND_NOT_RECOGNIZED) {
-          output("Hub in data folder outdated. Download a new hub for your OS at https://github.com/OpenBCI/OpenBCI_Ganglion_Electron/releases/latest");
-        }
-        break;
-      case 'x':
-        processExamine(msg);
-        break;
-      case 's': // Scan
-        processScan(msg);
-        break;
-      case 'l':
-        println("Hub: Log: " + list[1]);
-        break;
-      case 'p':
-        processProtocol(msg);
-        break;
-      case 'q':
-        processStatus(msg);
-        break;
-      case 'r':
-        processRegisterQuery(msg);
-        checkForSuccessTS = msg;
-        break;
-      case 'm':
-        processSDCard(msg);
-        break;
-      case 'w':
-        processWifi(msg);
-        break;
-      case 'k':
-        processCommand(msg);
-        break;
-      default:
-        println("Hub: parseMessage: default: " + msg);
+    case 'b': // board type setting
+      processBoardType(msg);
+      break;
+    case 'c': // Connect
+      processConnect(msg);
+      break;
+    case 'a': // Accel
+      processAccel(msg);
+      break;
+    case 'd': // Disconnect
+      processDisconnect(msg);
+      break;
+    case 'i': // Impedance
+      processImpedance(msg);
+      break;
+    case 't': // Data
+      processData(msg);
+      break;
+    case 'e': // Error
+      int code = int(list[1]);
+      println("Hub: parseMessage: error: " + list[2]);
+      if (code == RESP_ERROR_COMMAND_NOT_RECOGNIZED) {
         output("Hub in data folder outdated. Download a new hub for your OS at https://github.com/OpenBCI/OpenBCI_Ganglion_Electron/releases/latest");
-        break;
+      }
+      break;
+    case 'x':
+      processExamine(msg);
+      break;
+    case 's': // Scan
+      processScan(msg);
+      break;
+    case 'l':
+      println("Hub: Log: " + list[1]);
+      break;
+    case 'p':
+      processProtocol(msg);
+      break;
+    case 'q':
+      processStatus(msg);
+      break;
+    case 'r':
+      processRegisterQuery(msg);
+      checkForSuccessTS = msg;
+      break;
+    case 'm':
+      processSDCard(msg);
+      break;
+    case 'w':
+      processWifi(msg);
+      break;
+    case 'k':
+      processCommand(msg);
+      break;
+    default:
+      println("Hub: parseMessage: default: " + msg);
+      output("Hub in data folder outdated. Download a new hub for your OS at https://github.com/OpenBCI/OpenBCI_Ganglion_Electron/releases/latest");
+      break;
     }
   }
 
@@ -396,19 +418,19 @@ class Hub {
     String[] list = split(msg, ',');
     int code = Integer.parseInt(list[1]);
     switch (code) {
-      case RESP_SUCCESS:
-        if (sdSetting > 0) {
-          println("Hub: processBoardType: success, starting SD card now -- " + millis());
-          sdCardStart(sdSetting);
-        } else {
-          println("Hub: processBoardType: success -- " + millis());
-          initAndShowGUI();
-        }
-        break;
-      case RESP_ERROR_UNABLE_TO_SET_BOARD_TYPE:
-      default:
-        killAndShowMsg(list[2]);
-        break;
+    case RESP_SUCCESS:
+      if (sdSetting > 0) {
+        println("Hub: processBoardType: success, starting SD card now -- " + millis());
+        sdCardStart(sdSetting);
+      } else {
+        println("Hub: processBoardType: success -- " + millis());
+        initAndShowGUI();
+      }
+      break;
+    case RESP_ERROR_UNABLE_TO_SET_BOARD_TYPE:
+    default:
+      killAndShowMsg(list[2]);
+      break;
     }
   }
 
@@ -417,41 +439,41 @@ class Hub {
     int code = Integer.parseInt(list[1]);
     println("Hub: processConnect: made it -- " + millis() + " code: " + code);
     switch (code) {
-      case RESP_SUCCESS:
-      case RESP_ERROR_ALREADY_CONNECTED:
-        firmwareVersion = list[2];
-        changeState(STATE_SYNCWITHHARDWARE);
+    case RESP_SUCCESS:
+    case RESP_ERROR_ALREADY_CONNECTED:
+      firmwareVersion = list[2];
+      changeState(STATE_SYNCWITHHARDWARE);
+      if (eegDataSource == DATASOURCE_CYTON) {
+        if (nchan == 8) {
+          setBoardType("cyton");
+        } else {
+          setBoardType("daisy");
+        }
+      } else {
+        println("Hub: parseMessage: connect: success! -- " + millis());
+        initAndShowGUI();
+      }
+      break;
+    case RESP_ERROR_UNABLE_TO_CONNECT:
+      println("Error in processConnect: RESP_ERROR_UNABLE_TO_CONNECT");
+      if (list[2].equals("Error: Invalid sample rate")) {
         if (eegDataSource == DATASOURCE_CYTON) {
-          if (nchan == 8) {
-            setBoardType("cyton");
-          } else {
-            setBoardType("daisy");
-          }
+          killAndShowMsg("WiFi Shield is connected to a Ganglion. Please select LIVE (from Ganglion) instead of LIVE (from Cyton)");
         } else {
-          println("Hub: parseMessage: connect: success! -- " + millis());
-          initAndShowGUI();
+          killAndShowMsg("WiFi Shield is connected to a Cyton. Please select LIVE (from Cyton) instead LIVE (from Cyton)");
         }
-        break;
-      case RESP_ERROR_UNABLE_TO_CONNECT:
-        println("Error in processConnect: RESP_ERROR_UNABLE_TO_CONNECT");
-        if (list[2].equals("Error: Invalid sample rate")) {
-          if (eegDataSource == DATASOURCE_CYTON) {
-            killAndShowMsg("WiFi Shield is connected to a Ganglion. Please select LIVE (from Ganglion) instead of LIVE (from Cyton)");
-          } else {
-            killAndShowMsg("WiFi Shield is connected to a Cyton. Please select LIVE (from Cyton) instead LIVE (from Cyton)");
-          }
-        } else {
-          killAndShowMsg(list[2]);
-        }
-        break;
-      case RESP_ERROR_WIFI_NEEDS_UPDATE:
-        println("Error in processConnect: RESP_ERROR_WIFI_NEEDS_UPDATE");
-        killAndShowMsg("WiFi Shield Firmware is out of date. Learn to update: docs.openbci.com/Hardware/12-Wifi_Programming_Tutorial");
-        break;
-      default:
-        println("Error in processConnect");
-        handleError(code, list[2]);
-        break;
+      } else {
+        killAndShowMsg(list[2]);
+      }
+      break;
+    case RESP_ERROR_WIFI_NEEDS_UPDATE:
+      println("Error in processConnect: RESP_ERROR_WIFI_NEEDS_UPDATE");
+      killAndShowMsg("WiFi Shield Firmware is out of date. Learn to update: docs.openbci.com/Hardware/12-Wifi_Programming_Tutorial");
+      break;
+    default:
+      println("Error in processConnect");
+      handleError(code, list[2]);
+      break;
     }
   }
 
@@ -460,24 +482,24 @@ class Hub {
     String[] list = split(msg, ',');
     int code = Integer.parseInt(list[1]);
     switch (code) {
-      case RESP_SUCCESS:
-        portIsOpen = true;
-        output("Connected to WiFi Shield named " + wifi_portName);
-        if (wcBox.isShowing) {
-          wcBox.updateMessage("Connected to WiFi Shield named " + wifi_portName);
-        }
-        break;
-      case RESP_ERROR_ALREADY_CONNECTED:
-        portIsOpen = true;
-        output("WiFi Shield is still connected to " + wifi_portName);
-        break;
-      case RESP_ERROR_UNABLE_TO_CONNECT:
-        output("No WiFi Shield found, visit docs.openbci.com/Tutorials/03-Wifi_Getting_Started_Guide to learn how to connect.");
-        break;
-      default:
-        if (wcBox.isShowing) println("it is showing"); //controlPanel.hideWifiPopoutBox();
-        handleError(code, list[2]);
-        break;
+    case RESP_SUCCESS:
+      portIsOpen = true;
+      output("Connected to WiFi Shield named " + wifi_portName);
+      if (wcBox.isShowing) {
+        wcBox.updateMessage("Connected to WiFi Shield named " + wifi_portName);
+      }
+      break;
+    case RESP_ERROR_ALREADY_CONNECTED:
+      portIsOpen = true;
+      output("WiFi Shield is still connected to " + wifi_portName);
+      break;
+    case RESP_ERROR_UNABLE_TO_CONNECT:
+      output("No WiFi Shield found, visit docs.openbci.com/Tutorials/03-Wifi_Getting_Started_Guide to learn how to connect.");
+      break;
+    default:
+      if (wcBox.isShowing) println("it is showing"); //controlPanel.hideWifiPopoutBox();
+      handleError(code, list[2]);
+      break;
     }
   }
 
@@ -489,7 +511,7 @@ class Hub {
     String firmwareString = " Cyton firmware ";
     String settingsString = "Settings Loaded! ";
     if (eegDataSource == DATASOURCE_CYTON) {
-      firmwareString += firmwareVersion; 
+      firmwareString += firmwareVersion;
     } else if (eegDataSource == DATASOURCE_GANGLION) {
       firmwareString = ganglion_portName;
     } else {
@@ -499,7 +521,7 @@ class Hub {
     if (loadErrorCytonEvent == true) {
       outputError("Connection Error: Failed to apply channel settings to Cyton.");
     } else {
-      outputSuccess("The GUI is done initializing. " + settingsString + "Press \"Start Data Stream\" to start streaming! -- " + firmwareString);    
+      outputSuccess("The GUI is done initializing. " + settingsString + "Press \"Start Data Stream\" to start streaming! -- " + firmwareString);
     }
     portIsOpen = true;
     controlPanel.hideAllBoxes();
@@ -534,17 +556,17 @@ class Hub {
     String[] list = split(msg, ',');
     int code = Integer.parseInt(list[1]);
     switch (code) {
-      case RESP_SUCCESS:
-        println("Hub: processCommand: success -- " + millis());
-        break;
-      case RESP_ERROR_COMMAND_NOT_ABLE_TO_BE_SENT:
-        println("Hub: processCommand: ERROR_COMMAND_NOT_ABLE_TO_BE_SENT -- " + millis() + " " + list[2]);
-        break;
-      case RESP_ERROR_PROTOCOL_NOT_STARTED:
-        println("Hub: processCommand: RESP_ERROR_PROTOCOL_NOT_STARTED -- " + millis() + " " + list[2]);
-        break;
-      default:
-        break;
+    case RESP_SUCCESS:
+      println("Hub: processCommand: success -- " + millis());
+      break;
+    case RESP_ERROR_COMMAND_NOT_ABLE_TO_BE_SENT:
+      println("Hub: processCommand: ERROR_COMMAND_NOT_ABLE_TO_BE_SENT -- " + millis() + " " + list[2]);
+      break;
+    case RESP_ERROR_PROTOCOL_NOT_STARTED:
+      println("Hub: processCommand: RESP_ERROR_PROTOCOL_NOT_STARTED -- " + millis() + " " + list[2]);
+      break;
+    default:
+      break;
     }
   }
 
@@ -575,11 +597,11 @@ class Hub {
           dataPacket.sampleIndex = int(Integer.parseInt(list[2]));
 
           if ((dataPacket.sampleIndex - prevSampleIndex) != 1) {
-            if(dataPacket.sampleIndex != 0){  // if we rolled over, don't count as error
+            if (dataPacket.sampleIndex != 0) {  // if we rolled over, don't count as error
               bleErrorCounter++;
 
               werePacketsDroppedHub = true; //set this true to activate packet duplication in serialEvent
-              if(dataPacket.sampleIndex < prevSampleIndex){   //handle the situation in which the index jumps from 250s past 255, and back to 0
+              if (dataPacket.sampleIndex < prevSampleIndex) {   //handle the situation in which the index jumps from 250s past 255, and back to 0
                 numPacketsDroppedHub = (dataPacket.sampleIndex+(curProtocol == PROTOCOL_BLE ? 200 : 255)) - prevSampleIndex; //calculate how many times the last received packet should be duplicated...
               } else {
                 numPacketsDroppedHub = dataPacket.sampleIndex - prevSampleIndex; //calculate how many times the last received packet should be duplicated...
@@ -640,7 +662,7 @@ class Hub {
             }
           }
           getRawValues(dataPacket);
-          // println(binary(dataPacket.values[0], 24) + '\n' + binary(dataPacket.rawValues[0][0], 8) + binary(dataPacket.rawValues[0][1], 8) + binary(dataPacket.rawValues[0][2], 8) + '\n'); //<>//
+          // println(binary(dataPacket.values[0], 24) + '\n' + binary(dataPacket.rawValues[0][0], 8) + binary(dataPacket.rawValues[0][1], 8) + binary(dataPacket.rawValues[0][2], 8) + '\n');
           // println(dataPacket.values[7]);
           curDataPacketInd = (curDataPacketInd+1) % dataPacketBuff.length; // This is also used to let the rest of the code that it may be time to do something
           copyDataPacketTo(dataPacketBuff[curDataPacketInd]);
@@ -669,25 +691,33 @@ class Hub {
           // }
 
           switch (outputDataSource) {
-            case OUTPUT_SOURCE_ODF:
-              if (eegDataSource == DATASOURCE_GANGLION) {
-                fileoutput_odf.writeRawData_dataPacket(dataPacketBuff[curDataPacketInd], ganglion.get_scale_fac_uVolts_per_count(), ganglion.get_scale_fac_accel_G_per_count(), stopByte);
-                userInputFile.writeData(curDataPacketInd, uilOutputData); //<>//
-                String myStr = uilOutputData;
-              } else {
-                fileoutput_odf.writeRawData_dataPacket(dataPacketBuff[curDataPacketInd], cyton.get_scale_fac_uVolts_per_count(), cyton.get_scale_fac_accel_G_per_count(), stopByte);
-                /// copy userInputFile code from ganglion switch above
-              }
-              break;
-            case OUTPUT_SOURCE_BDF:
-              // curBDFDataPacketInd = curDataPacketInd;
-              // thread("writeRawData_dataPacket_bdf");
-              fileoutput_bdf.writeRawData_dataPacket(dataPacketBuff[curDataPacketInd]);
-              break;
-            case OUTPUT_SOURCE_NONE:
-            default:
-              // Do nothing...
-              break;
+          case OUTPUT_SOURCE_ODF:
+            if (eegDataSource == DATASOURCE_GANGLION) {
+              fileoutput_odf.writeRawData_dataPacket(dataPacketBuff[curDataPacketInd], ganglion.get_scale_fac_uVolts_per_count(), ganglion.get_scale_fac_accel_G_per_count(), stopByte);
+
+
+              userInputFile.writeData(curDataPacketInd, dataProcessing.headWidePower, uilOutputData);
+
+
+              //                float fDelta = dataProcessing.headWidePower[DELTA];
+              //float fTheta = dataProcessing.headWidePower[THETA];
+              //points3.add(ALPHA + 0.5, dataProcessing.headWidePower[ALPHA], "ALPHA");
+              //points3.add(BETA + 0.5, dataProcessing.headWidePower[BETA], "BETA");
+              //points3.add(GAMMA + 0.5, dataProcessing.headWidePower[GAMMA], "GAMMA");
+            } else {
+              fileoutput_odf.writeRawData_dataPacket(dataPacketBuff[curDataPacketInd], cyton.get_scale_fac_uVolts_per_count(), cyton.get_scale_fac_accel_G_per_count(), stopByte);
+              /// copy userInputFile code from ganglion switch above
+            }
+            break;
+          case OUTPUT_SOURCE_BDF:
+            // curBDFDataPacketInd = curDataPacketInd;
+            // thread("writeRawData_dataPacket_bdf");
+            fileoutput_bdf.writeRawData_dataPacket(dataPacketBuff[curDataPacketInd]);
+            break;
+          case OUTPUT_SOURCE_NONE:
+          default:
+            // Do nothing...
+            break;
           }
           newPacketCounter++;
         } else {
@@ -695,32 +725,32 @@ class Hub {
           println("Hub: parseMessage: data: bad");
         }
       }
-    } catch (Exception e) {
+    } 
+    catch (Exception e) {
       print("\n\n");
       println(msg);
       println("Hub: parseMessage: error: " + e);
       e.printStackTrace();
     }
-
   }
 
   private void processDisconnect(String msg) {
     String[] list = split(msg, ',');
     int code = Integer.parseInt(list[1]);
     switch (code) {
-      case RESP_SUCCESS:
-        if (!waitingForResponse) {
-          if (eegDataSource == DATASOURCE_CYTON) {
-            killAndShowMsg("Dang! Lost connection to Cyton. Please move closer or get a new battery!");
-          } else {
-            killAndShowMsg("Dang! Lost connection to Ganglion. Please move closer or get a new battery!");
-          }
+    case RESP_SUCCESS:
+      if (!waitingForResponse) {
+        if (eegDataSource == DATASOURCE_CYTON) {
+          killAndShowMsg("Dang! Lost connection to Cyton. Please move closer or get a new battery!");
         } else {
-          waitingForResponse = false;
+          killAndShowMsg("Dang! Lost connection to Ganglion. Please move closer or get a new battery!");
         }
-        break;
-      case RESP_ERROR_UNABLE_TO_DISCONNECT:
-        break;
+      } else {
+        waitingForResponse = false;
+      }
+      break;
+    case RESP_ERROR_UNABLE_TO_DISCONNECT:
+      break;
     }
     portIsOpen = false;
   }
@@ -729,22 +759,22 @@ class Hub {
     String[] list = split(msg, ',');
     int code = Integer.parseInt(list[1]);
     switch (code) {
-      case RESP_ERROR_IMPEDANCE_COULD_NOT_START:
-        ganglion.overrideCheckingImpedance(false);
-      case RESP_ERROR_IMPEDANCE_COULD_NOT_STOP:
-      case RESP_ERROR_IMPEDANCE_FAILED_TO_SET_IMPEDANCE:
-      case RESP_ERROR_IMPEDANCE_FAILED_TO_PARSE:
-        handleError(code, list[2]);
-        break;
-      case RESP_SUCCESS_DATA_IMPEDANCE:
-        ganglion.processImpedance(msg);
-        break;
-      case RESP_SUCCESS:
-        output("Success: Impedance " + list[2] + ".");
-        break;
-      default:
-        handleError(code, list[2]);
-        break;
+    case RESP_ERROR_IMPEDANCE_COULD_NOT_START:
+      ganglion.overrideCheckingImpedance(false);
+    case RESP_ERROR_IMPEDANCE_COULD_NOT_STOP:
+    case RESP_ERROR_IMPEDANCE_FAILED_TO_SET_IMPEDANCE:
+    case RESP_ERROR_IMPEDANCE_FAILED_TO_PARSE:
+      handleError(code, list[2]);
+      break;
+    case RESP_SUCCESS_DATA_IMPEDANCE:
+      ganglion.processImpedance(msg);
+      break;
+    case RESP_SUCCESS:
+      output("Success: Impedance " + list[2] + ".");
+      break;
+    default:
+      handleError(code, list[2]);
+      break;
     }
   }
 
@@ -752,21 +782,21 @@ class Hub {
     String[] list = split(msg, ',');
     int code = Integer.parseInt(list[1]);
     switch (code) {
-      case RESP_SUCCESS:
-        output("Transfer Protocol set to " + list[2]);
-        println("Transfer Protocol set to " + list[2]);
-        if (eegDataSource == DATASOURCE_GANGLION && ganglion.isBLE()) {
-          // hub.searchDeviceStart();
-          outputInfo("BLE was powered up sucessfully, now searching for BLE devices.");
-        }
-        break;
-      case RESP_ERROR_PROTOCOL_BLE_START:
-        outputError("Failed to start Ganglion BLE Driver, please see http://docs.openbci.com/Tutorials/02-Ganglion_Getting%20Started_Guide");
-        println("Failed to start Ganglion BLE Driver, please see http://docs.openbci.com/Tutorials/02-Ganglion_Getting%20Started_Guide");
-        break;
-      default:
-        handleError(code, list[2]);
-        break;
+    case RESP_SUCCESS:
+      output("Transfer Protocol set to " + list[2]);
+      println("Transfer Protocol set to " + list[2]);
+      if (eegDataSource == DATASOURCE_GANGLION && ganglion.isBLE()) {
+        // hub.searchDeviceStart();
+        outputInfo("BLE was powered up sucessfully, now searching for BLE devices.");
+      }
+      break;
+    case RESP_ERROR_PROTOCOL_BLE_START:
+      outputError("Failed to start Ganglion BLE Driver, please see http://docs.openbci.com/Tutorials/02-Ganglion_Getting%20Started_Guide");
+      println("Failed to start Ganglion BLE Driver, please see http://docs.openbci.com/Tutorials/02-Ganglion_Getting%20Started_Guide");
+      break;
+    default:
+      handleError(code, list[2]);
+      break;
     }
   }
 
@@ -790,44 +820,44 @@ class Hub {
     int code = Integer.parseInt(list[1]);
 
     switch (code) {
-      case RESP_ERROR_CHANNEL_SETTINGS:
-        killAndShowMsg("Failed to sync with Cyton, please power cycle your dongle and board.");
-        println("RESP_ERROR_CHANNEL_SETTINGS general error: " + list[2]);
+    case RESP_ERROR_CHANNEL_SETTINGS:
+      killAndShowMsg("Failed to sync with Cyton, please power cycle your dongle and board.");
+      println("RESP_ERROR_CHANNEL_SETTINGS general error: " + list[2]);
+      break;
+    case RESP_ERROR_CHANNEL_SETTINGS_SYNC_IN_PROGRESS:
+      println("tried to sync channel settings but there was already one in progress");
+      break;
+    case RESP_ERROR_CHANNEL_SETTINGS_FAILED_TO_SET_CHANNEL:
+      println("an error was thrown trying to set the channels | error: " + list[2]);
+      break;
+    case RESP_ERROR_CHANNEL_SETTINGS_FAILED_TO_PARSE:
+      println("an error was thrown trying to call the function to set the channels | error: " + list[2]);
+      break;
+    case RESP_SUCCESS:
+      // Sent when either a scan was stopped or started Successfully
+      String action = list[2];
+      switch (action) {
+      case TCP_ACTION_START:
+        println("Query registers for cyton channel settings");
         break;
-      case RESP_ERROR_CHANNEL_SETTINGS_SYNC_IN_PROGRESS:
-        println("tried to sync channel settings but there was already one in progress");
-        break;
-      case RESP_ERROR_CHANNEL_SETTINGS_FAILED_TO_SET_CHANNEL:
-        println("an error was thrown trying to set the channels | error: " + list[2]);
-        break;
-      case RESP_ERROR_CHANNEL_SETTINGS_FAILED_TO_PARSE:
-        println("an error was thrown trying to call the function to set the channels | error: " + list[2]);
-        break;
-      case RESP_SUCCESS:
-        // Sent when either a scan was stopped or started Successfully
-        String action = list[2];
-        switch (action) {
-          case TCP_ACTION_START:
-            println("Query registers for cyton channel settings");
-            break;
-        }
-        break;
-      case RESP_SUCCESS_CHANNEL_SETTING:
-        int channelNumber = Integer.parseInt(list[2]);
-        // power down comes in as either 'true' or 'false', 'true' is a '1' and false is a '0'
-        channelSettingValues[channelNumber][0] = list[3].equals("true") ? '1' : '0';
-        // gain comes in as an int, either 1, 2, 4, 6, 8, 12, 24 and must get converted to
-        //  '0', '1', '2', '3', '4', '5', '6' respectively, of course.
-        channelSettingValues[channelNumber][1] = cyton.getCommandForGain(Integer.parseInt(list[4]));
-        // input type comes in as a string version and must get converted to char
-        channelSettingValues[channelNumber][2] = cyton.getCommandForInputType(list[5]);
-        // bias is like power down
-        channelSettingValues[channelNumber][3] = list[6].equals("true") ? '1' : '0';
-        // srb2 is like power down
-        channelSettingValues[channelNumber][4] = list[7].equals("true") ? '1' : '0';
-        // srb1 is like power down
-        channelSettingValues[channelNumber][5] = list[8].equals("true") ? '1' : '0';
-        break;
+      }
+      break;
+    case RESP_SUCCESS_CHANNEL_SETTING:
+      int channelNumber = Integer.parseInt(list[2]);
+      // power down comes in as either 'true' or 'false', 'true' is a '1' and false is a '0'
+      channelSettingValues[channelNumber][0] = list[3].equals("true") ? '1' : '0';
+      // gain comes in as an int, either 1, 2, 4, 6, 8, 12, 24 and must get converted to
+      //  '0', '1', '2', '3', '4', '5', '6' respectively, of course.
+      channelSettingValues[channelNumber][1] = cyton.getCommandForGain(Integer.parseInt(list[4]));
+      // input type comes in as a string version and must get converted to char
+      channelSettingValues[channelNumber][2] = cyton.getCommandForInputType(list[5]);
+      // bias is like power down
+      channelSettingValues[channelNumber][3] = list[6].equals("true") ? '1' : '0';
+      // srb2 is like power down
+      channelSettingValues[channelNumber][4] = list[7].equals("true") ? '1' : '0';
+      // srb1 is like power down
+      channelSettingValues[channelNumber][5] = list[8].equals("true") ? '1' : '0';
+      break;
     }
   }
 
@@ -835,61 +865,61 @@ class Hub {
     String[] list = split(msg, ',');
     int code = Integer.parseInt(list[1]);
     switch (code) {
-      case RESP_GANGLION_FOUND:
-      case RESP_WIFI_FOUND:
-        // Sent every time a new ganglion device is found
-        if (searchDeviceAdd(list[2])) {
-          deviceListUpdated = true;
-        }
-        break;
-      case RESP_ERROR_SCAN_ALREADY_SCANNING:
-        // Sent when a start send command is sent and the module is already
-        //  scanning.
-        // handleError(code, list[2]);
+    case RESP_GANGLION_FOUND:
+    case RESP_WIFI_FOUND:
+      // Sent every time a new ganglion device is found
+      if (searchDeviceAdd(list[2])) {
+        deviceListUpdated = true;
+      }
+      break;
+    case RESP_ERROR_SCAN_ALREADY_SCANNING:
+      // Sent when a start send command is sent and the module is already
+      //  scanning.
+      // handleError(code, list[2]);
+      searching = true;
+      break;
+    case RESP_SUCCESS:
+      // Sent when either a scan was stopped or started Successfully
+      String action = list[2];
+      switch (action) {
+      case TCP_ACTION_START:
         searching = true;
         break;
-      case RESP_SUCCESS:
-        // Sent when either a scan was stopped or started Successfully
-        String action = list[2];
-        switch (action) {
-          case TCP_ACTION_START:
-            searching = true;
-            break;
-          case TCP_ACTION_STOP:
-            searching = false;
-            break;
-        }
-        break;
-      case RESP_ERROR_TIMEOUT_SCAN_STOPPED:
+      case TCP_ACTION_STOP:
         searching = false;
         break;
-      case RESP_ERROR_SCAN_COULD_NOT_START:
-        // Sent when err on search start
-        handleError(code, list[2]);
-        searching = false;
-        break;
-      case RESP_ERROR_SCAN_COULD_NOT_STOP:
-        // Send when err on search stop
-        handleError(code, list[2]);
-        searching = false;
-        break;
-      case RESP_STATUS_SCANNING:
-        // Sent when after status action sent to node and module is searching
-        searching = true;
-        break;
-      case RESP_STATUS_NOT_SCANNING:
-        // Sent when after status action sent to node and module is NOT searching
-        searching = false;
-        break;
-      case RESP_ERROR_SCAN_NO_SCAN_TO_STOP:
-        // Sent when a 'stop' action is sent to node and there is no scan to stop.
-        // handleError(code, list[2]);
-        searching = false;
-        break;
-      case RESP_ERROR_UNKNOWN:
-      default:
-        handleError(code, list[2]);
-        break;
+      }
+      break;
+    case RESP_ERROR_TIMEOUT_SCAN_STOPPED:
+      searching = false;
+      break;
+    case RESP_ERROR_SCAN_COULD_NOT_START:
+      // Sent when err on search start
+      handleError(code, list[2]);
+      searching = false;
+      break;
+    case RESP_ERROR_SCAN_COULD_NOT_STOP:
+      // Send when err on search stop
+      handleError(code, list[2]);
+      searching = false;
+      break;
+    case RESP_STATUS_SCANNING:
+      // Sent when after status action sent to node and module is searching
+      searching = true;
+      break;
+    case RESP_STATUS_NOT_SCANNING:
+      // Sent when after status action sent to node and module is NOT searching
+      searching = false;
+      break;
+    case RESP_ERROR_SCAN_NO_SCAN_TO_STOP:
+      // Sent when a 'stop' action is sent to node and there is no scan to stop.
+      // handleError(code, list[2]);
+      searching = false;
+      break;
+    case RESP_ERROR_UNKNOWN:
+    default:
+      handleError(code, list[2]);
+      break;
     }
   }
 
@@ -905,32 +935,32 @@ class Hub {
     String action = list[2];
 
     switch(code) {
-      case RESP_SUCCESS:
-        // Sent when either a scan was stopped or started Successfully
-        switch (action) {
-          case TCP_ACTION_START:
-            println("sd card setting set so now attempting to sync channel settings");
-            // cyton.syncChannelSettings();
-            initAndShowGUI();
-            break;
-          case TCP_ACTION_STOP:
-            println(list[3]);
-            break;
-        }
+    case RESP_SUCCESS:
+      // Sent when either a scan was stopped or started Successfully
+      switch (action) {
+      case TCP_ACTION_START:
+        println("sd card setting set so now attempting to sync channel settings");
+        // cyton.syncChannelSettings();
+        initAndShowGUI();
         break;
-      case RESP_ERROR_UNKNOWN:
-        switch (action) {
-          case TCP_ACTION_START:
-            killAndShowMsg(list[3]);
-            break;
-          case TCP_ACTION_STOP:
-            println(list[3]);
-            break;
-        }
+      case TCP_ACTION_STOP:
+        println(list[3]);
         break;
-      default:
-        handleError(code, list[2]);
+      }
+      break;
+    case RESP_ERROR_UNKNOWN:
+      switch (action) {
+      case TCP_ACTION_START:
+        killAndShowMsg(list[3]);
         break;
+      case TCP_ACTION_STOP:
+        println(list[3]);
+        break;
+      }
+      break;
+    default:
+      handleError(code, list[2]);
+      break;
     }
   }
 
@@ -988,17 +1018,17 @@ class Hub {
 
   public void closePort() {
     switch (curProtocol) {
-      case PROTOCOL_BLE:
-        disconnectBLE();
-        break;
-      case PROTOCOL_WIFI:
-        disconnectWifi();
-        break;
-      case PROTOCOL_SERIAL:
-        disconnectSerial();
-        break;
-      default:
-        break;
+    case PROTOCOL_BLE:
+      disconnectBLE();
+      break;
+    case PROTOCOL_WIFI:
+      disconnectWifi();
+      break;
+    case PROTOCOL_SERIAL:
+      disconnectSerial();
+      break;
+    default:
+      break;
     }
     changeState(STATE_NOCOM);
   }
@@ -1007,7 +1037,6 @@ class Hub {
   public void connectBLE(String id) {
     write(TCP_CMD_CONNECT + "," + id + TCP_STOP);
     verbosePrint("OpenBCI_GUI: hub : Sent connect to Hub - Id: " + id);
-
   }
   public void disconnectBLE() {
     waitingForResponse = true;
@@ -1034,7 +1063,6 @@ class Hub {
     write(TCP_CMD_CONNECT + "," + id + TCP_STOP);
     verbosePrint("OpenBCI_GUI: hub : Sent connect to Hub - Id: " + id);
     delay(1000);
-
   }
   public int disconnectSerial() {
     println("disconnecting serial");
@@ -1070,55 +1098,55 @@ class Hub {
     String[] list = split(msg, ',');
     int code = Integer.parseInt(list[1]);
     switch (code) {
-      case RESP_ERROR_WIFI_ACTION_NOT_RECOGNIZED:
-        println("Sent an action to hub for wifi info but the command was unrecognized");
-        output("Sent an action to hub for wifi info but the command was unrecognized");
-        break;
-      case RESP_ERROR_WIFI_NOT_CONNECTED:
-        println("Tried to get wifi info but no WiFi Shield was connected.");
-        output("Tried to get wifi info but no WiFi Shield was connected.");
-        break;
-      case RESP_ERROR_CHANNEL_SETTINGS_FAILED_TO_SET_CHANNEL:
-        println("an error was thrown trying to set the channels | error: " + list[2]);
-        break;
-      case RESP_ERROR_CHANNEL_SETTINGS_FAILED_TO_PARSE:
-        println("an error was thrown trying to call the function to set the channels | error: " + list[2]);
-        break;
-      case RESP_SUCCESS:
-        // Sent when either a scan was stopped or started Successfully
-        if (wcBox.isShowing) {
-          String msgForWcBox = list[3];
+    case RESP_ERROR_WIFI_ACTION_NOT_RECOGNIZED:
+      println("Sent an action to hub for wifi info but the command was unrecognized");
+      output("Sent an action to hub for wifi info but the command was unrecognized");
+      break;
+    case RESP_ERROR_WIFI_NOT_CONNECTED:
+      println("Tried to get wifi info but no WiFi Shield was connected.");
+      output("Tried to get wifi info but no WiFi Shield was connected.");
+      break;
+    case RESP_ERROR_CHANNEL_SETTINGS_FAILED_TO_SET_CHANNEL:
+      println("an error was thrown trying to set the channels | error: " + list[2]);
+      break;
+    case RESP_ERROR_CHANNEL_SETTINGS_FAILED_TO_PARSE:
+      println("an error was thrown trying to call the function to set the channels | error: " + list[2]);
+      break;
+    case RESP_SUCCESS:
+      // Sent when either a scan was stopped or started Successfully
+      if (wcBox.isShowing) {
+        String msgForWcBox = list[3];
 
-          switch (list[2]) {
-            case TCP_WIFI_GET_TYPE_OF_ATTACHED_BOARD:
-              switch(list[3]) {
-                case "none":
-                  msgForWcBox = "No OpenBCI Board attached to WiFi Shield";
-                  break;
-                case "ganglion":
-                  msgForWcBox = "4-channel Ganglion attached to WiFi Shield";
-                  break;
-                case "cyton":
-                  msgForWcBox = "8-channel Cyton attached to WiFi Shield";
-                  break;
-                case "daisy":
-                  msgForWcBox = "16-channel Cyton with Daisy attached to WiFi Shield";
-                  break;
-              }
-              break;
-            case TCP_WIFI_ERASE_CREDENTIALS:
-              output("WiFi credentials have been erased and WiFi Shield is in hotspot mode. If erase fails, remove WiFi Shield from OpenBCI Board.");
-              msgForWcBox = "";
-              controlPanel.hideWifiPopoutBox();
-              wifi_portName = "N/A";
-              clearDeviceList();
-              controlPanel.wifiBox.refreshWifiList();
-              break;
+        switch (list[2]) {
+        case TCP_WIFI_GET_TYPE_OF_ATTACHED_BOARD:
+          switch(list[3]) {
+          case "none":
+            msgForWcBox = "No OpenBCI Board attached to WiFi Shield";
+            break;
+          case "ganglion":
+            msgForWcBox = "4-channel Ganglion attached to WiFi Shield";
+            break;
+          case "cyton":
+            msgForWcBox = "8-channel Cyton attached to WiFi Shield";
+            break;
+          case "daisy":
+            msgForWcBox = "16-channel Cyton with Daisy attached to WiFi Shield";
+            break;
           }
-          wcBox.updateMessage(msgForWcBox);
+          break;
+        case TCP_WIFI_ERASE_CREDENTIALS:
+          output("WiFi credentials have been erased and WiFi Shield is in hotspot mode. If erase fails, remove WiFi Shield from OpenBCI Board.");
+          msgForWcBox = "";
+          controlPanel.hideWifiPopoutBox();
+          wifi_portName = "N/A";
+          clearDeviceList();
+          controlPanel.wifiBox.refreshWifiList();
+          break;
         }
-        println("Success for wifi " + list[2] + ": " + list[3]);
-        break;
+        wcBox.updateMessage(msgForWcBox);
+      }
+      println("Success for wifi " + list[2] + ": " + list[3]);
+      break;
     }
   }
 
@@ -1132,7 +1160,8 @@ class Hub {
       // println("out " + out);
       tcpClient.write(out);
       return true;
-    } catch (Exception e) {
+    } 
+    catch (Exception e) {
       if (isWindows()) {
         killAndShowMsg("Please start OpenBCIHub before launching this application.");
       } else {
@@ -1191,5 +1220,4 @@ class Hub {
     }
     return false;
   }
-
 };
