@@ -121,6 +121,7 @@ void closeLogFileBDF() {
   if (fileoutput_bdf != null) {
     //TODO: Need to update the rows written in the header
     fileoutput_bdf.closeFile();
+
   }
 }
 

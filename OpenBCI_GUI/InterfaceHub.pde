@@ -672,8 +672,11 @@ class Hub {
             case OUTPUT_SOURCE_ODF:
               if (eegDataSource == DATASOURCE_GANGLION) {
                 fileoutput_odf.writeRawData_dataPacket(dataPacketBuff[curDataPacketInd], ganglion.get_scale_fac_uVolts_per_count(), ganglion.get_scale_fac_accel_G_per_count(), stopByte);
+                userInputFile.writeData(curDataPacketInd, uilOutputData); //<>//
+                String myStr = uilOutputData;
               } else {
                 fileoutput_odf.writeRawData_dataPacket(dataPacketBuff[curDataPacketInd], cyton.get_scale_fac_uVolts_per_count(), cyton.get_scale_fac_accel_G_per_count(), stopByte);
+                /// copy userInputFile code from ganglion switch above
               }
               break;
             case OUTPUT_SOURCE_BDF:

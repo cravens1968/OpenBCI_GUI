@@ -9,13 +9,27 @@
 //
 ///////////////////////////////////////////////////,
 
+////////////////
+// GLOBAL VARIABLES
+//////////////////
+String uilOutputData, onData, offData;
+boolean outputToggle;
+
+
 class W_UserInputLogger extends Widget {
   Button submitButton;
+
+
 
   W_UserInputLogger(PApplet _parent) {
     super(_parent); //calls the parent CONSTRUCTOR method of Widget (DON'T REMOVE)
     super.dropdownWidth = 128;
     PFont font = createFont("arial", 20);
+
+    outputToggle = false;  
+    onData = new String("1");
+    offData = new String("0");
+    uilOutputData = offData;
 
 
     addDropdown("uilDropdown1", "On Mouse Click", Arrays.asList("Meditate|Focus", "Open|Closed", "0|1"), 2);
@@ -39,6 +53,11 @@ class W_UserInputLogger extends Widget {
       ;
 
     cp5_widget.addTextfield("Session Objective")
+      .setFont(font)
+      .setFocus(false)
+      .setColor(color(255, 0, 0))
+      ;
+    cp5_widget.addTextfield("Electrode Positions")
       .setFont(font)
       .setFocus(false)
       .setColor(color(255, 0, 0))
@@ -73,10 +92,21 @@ class W_UserInputLogger extends Widget {
     cp5_widget.getController("Subject Name").setPosition(x+10, y+210);
     cp5_widget.getController("Subject Name").setSize(w-25, 40);
 
-    submitButton.setPos((int)(x + 3), (int)(y + 3 - navHeight));
+    cp5_widget.getController("Electrode Positions").setPosition(x+10, y+310);
+    cp5_widget.getController("Electrode Positions").setSize(w-25, 40);
+
+    submitButton.setPos((int)(x + 3), (int)(y + 3 - navHeight));  // write notes to file
 
 
     submitButton.draw();
+
+    if (outputToggle) {            //  draw circle to illustrate whether toggle is on or off
+      fill(color(0, 255, 0));
+    } else {
+      fill(color(255, 0, 0));
+    }
+
+    ellipse(x+w/2, y + h/4*3, w/4, w/4);
 
     popStyle();
   }
@@ -94,6 +124,7 @@ class W_UserInputLogger extends Widget {
     Textfield tfDesc = (Textfield) cp5_widget.getController("Session Description");
     Textfield tfObj = (Textfield) cp5_widget.getController("Session Objective");
     Textfield tfSubjN = (Textfield) cp5_widget.getController("Subject Name");
+    Textfield tfEpos = (Textfield) cp5_widget.getController("Electrode Positions");
 
     if (submitButton.isMouseHere()) {
       submitButton.setIsActive(true);
@@ -110,16 +141,27 @@ class W_UserInputLogger extends Widget {
     Textfield tfDesc = (Textfield) cp5_widget.getController("Session Description");
     Textfield tfObj = (Textfield) cp5_widget.getController("Session Objective");
     Textfield tfSubjN = (Textfield) cp5_widget.getController("Subject Name");
-
+    Textfield tfEpos = (Textfield) cp5_widget.getController("Electrode Positions");
 
     if (submitButton.isActive && submitButton.isMouseHere()) {
       userInputFile.writeHeader("%"+"Session Description = " + tfDesc.getText());
       userInputFile.writeHeader("%"+"Session Objective = " + tfObj.getText());
       userInputFile.writeHeader("%"+"Subject Name = " + tfSubjN.getText());
+      userInputFile.writeHeader("%"+"Electrode Positions = " + tfEpos.getText());
       controlPanel.isShortcutEnabled = true;
       println("Enable Keyboard Shortcuts");
     }
     submitButton.setIsActive(false);
+
+    if (isMouseHere()) {
+      // clicked in widget
+      outputToggle = !outputToggle;
+      if (outputToggle) {
+        uilOutputData = onData;
+      } else {
+        uilOutputData = offData;
+      }
+    }
   }
 
 
@@ -133,9 +175,17 @@ class W_UserInputLogger extends Widget {
 void uilDropdown1(int n) {
   println("Item " + (n+1) + " selected from Dropdown 1");
   if (n==0) {
-    //do this
+    // "Meditate|Focus"
+    onData = "Focus";
+    offData = "Meditate";
   } else if (n==1) {
-    //do this instead
+    // "Open|Closed"
+    onData = "Closed";
+    offData = "Open";
+  } else if (n==2) {
+    //      "0|1"
+    onData = "1";
+    offData = "0";
   }
 
   closeAllDropdowns(); // do this at the end of all widget-activated functions to ensure proper widget interactivity ... we want to make sure a click makes the menu close
