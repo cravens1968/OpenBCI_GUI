@@ -144,10 +144,10 @@ class W_UserInputLogger extends Widget {
     Textfield tfEpos = (Textfield) cp5_widget.getController("Electrode Positions");
 
     if (submitButton.isActive && submitButton.isMouseHere()) {
-      userInputFile.writeHeader("%"+"Session Description = " + tfDesc.getText());
-      userInputFile.writeHeader("%"+"Session Objective = " + tfObj.getText());
-      userInputFile.writeHeader("%"+"Subject Name = " + tfSubjN.getText());
-      userInputFile.writeHeader("%"+"Electrode Positions = " + tfEpos.getText());
+      outputFile_Extended.writeHeader("%"+"Session Description = " + tfDesc.getText());
+      outputFile_Extended.writeHeader("%"+"Session Objective = " + tfObj.getText());
+      outputFile_Extended.writeHeader("%"+"Subject Name = " + tfSubjN.getText());
+      outputFile_Extended.writeHeader("%"+"Electrode Positions = " + tfEpos.getText());
       controlPanel.isShortcutEnabled = true;
       println("Enable Keyboard Shortcuts");
     }
@@ -155,11 +155,16 @@ class W_UserInputLogger extends Widget {
 
     if (isMouseHere()) {
       // clicked in widget
-      outputToggle = !outputToggle;
-      if (outputToggle) {
-        uilOutputData = onData;
+      if (tfDesc.isFocus() || tfObj.isFocus() || tfSubjN.isFocus() || tfEpos.isFocus()) {
+        controlPanel.isShortcutEnabled = false;
       } else {
-        uilOutputData = offData;
+
+        outputToggle = !outputToggle;
+        if (outputToggle) {
+          uilOutputData = onData;
+        } else {
+          uilOutputData = offData;
+        }
       }
     }
   }

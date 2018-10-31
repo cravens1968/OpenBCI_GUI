@@ -66,9 +66,9 @@ void openNewLogFileODF(String _fileName) {
     println("OpenBCI_GUI: closing log file");
     closeLogFile();
   }
-  if (userInputFile != null) {
+  if (outputFile_Extended != null) {
     println("OpenBCI_GUI: closing user input log file");
-    closeUserInputFile();
+    closeOutputFile_Extended();
   }
 
   //open the new file
@@ -77,9 +77,9 @@ void openNewLogFileODF(String _fileName) {
 
   output_fname = fileoutput_odf.fname;
   
-  userInputFile = new UserInputFile(getSampleRateSafe(), _fileName);  // user input log will have same name as data log + "_user"
+  outputFile_Extended = new OutputFile_Extended(getSampleRateSafe(), _fileName);  // user input log will have same name as data log + "_user"
   println("cyton: openNewLogFile: opened ODF output file: " + output_fname); //Print filename of new ODF file to console
-    println("cyton: openNewUserLogFile: opened user log file: " + userInputFile.fname); //Print filename of new ODF file to console
+    println("cyton: openNewUserLogFile: opened user log file: " + outputFile_Extended.fname); //Print filename of new ODF file to console
   //output("cyton: openNewLogFile: opened ODF output file: " + output_fname);
 }
 
@@ -133,9 +133,9 @@ void closeLogFileODF() {
     fileoutput_odf.closeFile();
   }
 }
-void closeUserInputFile() {
-  if (userInputFile != null) {
-    userInputFile.closeFile();
+void closeOutputFile_Extended() {
+  if (outputFile_Extended != null) {
+    outputFile_Extended.closeFile();
   }
 }
 

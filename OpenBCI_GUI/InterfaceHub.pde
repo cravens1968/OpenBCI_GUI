@@ -696,7 +696,7 @@ class Hub {
               fileoutput_odf.writeRawData_dataPacket(dataPacketBuff[curDataPacketInd], ganglion.get_scale_fac_uVolts_per_count(), ganglion.get_scale_fac_accel_G_per_count(), stopByte);
 
 
-              userInputFile.writeData(curDataPacketInd, dataProcessing.headWidePower, uilOutputData);
+              outputFile_Extended.writeData(curDataPacketInd, dataProcessing.headWidePower, uilOutputData);
 
 
               //                float fDelta = dataProcessing.headWidePower[DELTA];
@@ -706,7 +706,7 @@ class Hub {
               //points3.add(GAMMA + 0.5, dataProcessing.headWidePower[GAMMA], "GAMMA");
             } else {
               fileoutput_odf.writeRawData_dataPacket(dataPacketBuff[curDataPacketInd], cyton.get_scale_fac_uVolts_per_count(), cyton.get_scale_fac_accel_G_per_count(), stopByte);
-              /// copy userInputFile code from ganglion switch above
+              /// copy outputFile_Extended code from ganglion switch above
             }
             break;
           case OUTPUT_SOURCE_BDF:

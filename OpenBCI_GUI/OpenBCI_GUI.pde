@@ -88,11 +88,12 @@ final int INTERFACE_HUB_WIFI = 2; // used by both cyton and ganglion
 final int INTERFACE_HUB_BLED112 = 3; // used only by ganglion with bled dongle
 
 //here are variables that are used if loading input data from a CSV text file...double slash ("\\") is necessary to make a single slash
+Table_CSV playbackData_table;
 String playbackData_fname = "N/A"; //only used if loading input data from a file
 // String playbackData_fname;  //leave blank to cause an "Open File" dialog box to appear at startup.  USEFUL!
 float playback_speed_fac = 1.0f;  //make 1.0 for real-time.  larger for faster playback
 int currentTableRowIndex = 0;
-Table_CSV playbackData_table;
+
 int nextPlayback_millis = -100; //any negative number
 
 // Initialize boards for constants
@@ -169,7 +170,7 @@ float dataBuff_len_sec = displayTime_sec + 3f; //needs to be wider than actual d
 
 //variables for writing EEG data out to a file
 OutputFile_rawtxt fileoutput_odf;
-UserInputFile userInputFile;
+OutputFile_Extended outputFile_Extended;
 OutputFile_BDF fileoutput_bdf;
 String output_fname;
 String fileName = "N/A";
